@@ -34,7 +34,7 @@ In this post, you will learn how to setup a CI server together with a GitHub rep
 
 You will build a simple hello word app with Node.js. Ensure that you have Node.js installed on your machine before moving ahead. However, if you don’t have it yet, follow this [link](https://nodejs.org/en/download/) to install it. 
 
-**Scaffolding a Node.js Web App**
+### Scaffolding a Node.js Web App
 
 Here, you will setup the structure of your Node.js application. For easy setup, you can run the `npm init` command in the project directory. This will guide you through generating a `package.json` file for your Node.js app. The `package.json` file contains basic information about your app coupled with the name of the dependencies used. If you run the command, you should see something like this on your screen,
  
@@ -69,7 +69,8 @@ After you enter the last field(license), the `package.json` file will be generat
     }
 
 
-**Installing Dependencies**
+### Installing Dependencies
+
 Haven created the `package.json` file, you will need to install the dependencies needed to build your project. You particularly need two dependencies for this one - `express` and `body-parser`. You can install all these dependencies at once by running this command:
 
 
@@ -77,7 +78,8 @@ Haven created the `package.json` file, you will need to install the dependencies
 
 Once the installation is complete you should see a `node_modules` folder. Additionally, your `package.json` file will contain the dependencies installed and their versions.
 
-**Creating a Web Page**
+### Creating a Web Page
+
 During the setup of the app, the `index.js` file was declared as the entry point of the app. Now, you need to create the file. Still in the app directory, run this command to create the file:
 
 
