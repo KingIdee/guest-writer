@@ -13,7 +13,7 @@ related:
 ---
 
 ## TL;DR: 
-In this article, you will learn how to configure a continuous deployment pipeline for a Node.js web application. For demonstration purposes, you will use Now.sh, GitHub, and TravisCI to automate the pipeline. Actually, the strategy can be used with other programming languages (e.g. Python, Java, .NET Core) and tools (like BitBucket, AWS, and Circle CI).
+In this article, you will learn how to configure a continuous deployment pipeline for web apps. For demonstration purposes, you will use Now.sh, GitHub, and TravisCI to automate the pipeline. Actually, the strategy can be used with other programming languages (e.g. Python, Java, .NET Core) and tools (like BitBucket, AWS, and Circle CI).
 
 
 ## Continuous Deployment Overview
@@ -81,7 +81,7 @@ Once the installation is complete you should see a `node_modules` folder. Additi
 
 ### Creating a Web Page
 
-During the setup of the app, the `index.js` file was declared as the entry point of the app. Now, you need to create the file. Still in the app directory, run this command to create the file:
+During the setup of the app, NPM declared the `index.js` file as the entry point of the app. Now, you need to create the file. Still in the app directory, run this command to create the file:
 
 ```
 touch index.js
@@ -153,22 +153,24 @@ node index.js
 
 If you visit `http://localhost:5000` , you should see something like this:
 
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532524887723_Screen+Shot+2018-07-25+at+2.21.11+PM.png)
+
 
 ## Introducing GitHub
 
-Earlier in this article, I mentioned the need for repository to demonstrate this subject matter. A repository is simply means a place where files are stored. You will need to store your project on a remote (online) repository. This term is commonly used when talking about version control systems. Version control systems are systems that keep record of files and changes on them. 
+Earlier in this article, I mentioned the need for repository to demonstrate this subject matter. A repository is simply a place where files are stored. You will need to store your project on a remote (online) repository. The term repository is commonly used when talking about version control systems. Version control systems are systems that keep record of files and changes on them. 
 
-Git is one of the most popular version control systems out there. And so, a web service that can host a git repository is needed. There are many available out there but we will use the most popular of them, GitHub. GitHub is a web service where git repositories are hosted. Actually, they offer more than this and you can read more about GitHub here.
+Git is one of the most popular version control systems out there. And so, a web service that can host a git repository is what we will opt for. There are many available out there but we will use the most popular of them, GitHub. [GitHub] (https://www.github.com) is a web service where git repositories are hosted. Actually, they offer more than this and you can read more about GitHub [here](https://github.com/features).
 
 ### Creating a GitHub Account
 
-If you don’t have an account with GitHub, visit the [website](https://www.github.com) and create an account or you login to your profile if you do. Creating an account requires a unique username and email with any password of your choice. 
+If you don’t have an account with GitHub, visit the [website](https://www.github.com) and create an account or you login to your profile if you do. Creating an account requires a unique username, email with any password of your choice. 
 
 
 ![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532375325519_Screen+Shot+2018-07-23+at+8.48.26+PM.png)
 
 
-After registration, you will be required to verify your account through your email address to gain full access to all GitHub features.
+After registration, you will be required to verify your account through your email address to gain full access.
 
 ### Creating a GitHub Repository
 
@@ -236,6 +238,43 @@ This command adds a message to the added/changed files to note what changes that
 git push -u origin master
 ```
 
-This command pushes the changes made to the project to the remote repository which was set initially and sets up  the local to track remote changes.
+This command pushes the local changes made to the project to the remote repository and sets up the local project to track remote changes.
 
 If everything works fine you should see your project online when you visit the repository you created. 
+
+## Introducing Now.sh
+
+[Now](http://now.sh) is a Platform as a Service (Paas) which allows you deploy your Node.js or Docker powered websites to the cloud with ease. Now aims to make continuous deployments easier for developers. Naturally, deploying websites built with Node.js require a sound knowledge of  server configurations and management together with a good command of the terminal. With Now, you can focus more on your app logic and worry less on deployments.
+
+Some of the amazing features of Now include:
+
+- Free unique URL -  for every deployment made, there is a unique `URL`  generated usually in the form `<appname>-<random string>.now.sh` E.g `helloworld-hddnhdvhsd.now.sh`
+- Process logging - every process from the point of running the command to the point of starting the server for the deployed app is logged on the screen and can be viewed by clicking on any of the deployment instance link found on your dashboard.
+- SSL certificate management - Now uses [Let's Encrypt](https://letsencrypt.org/) to provide your deployments with SSL at no cost thereby. Etc.
+
+Now also offers you the option of purchasing a custom domain. You can read more about Now in the official [docs](https://zeit.co/docs) page. 
+
+### Creating a Now.sh Account
+
+Go to [Now.sh](https://zeit.co/signup) and create an account. You can easily use the **Signup with GitHub** option.
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532614163877_Screen+Shot+2018-07-26+at+3.08.44+PM.png)
+
+
+
+If you chose the Signup with GitHub option, a verification mail will be sent to your email address. After verifying your email, you can now [login with GitHub](https://zeit.co/login). If you are a new user, after logging in, your dashboard should look like this:
+
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532391681715_Screen+Shot+2018-07-24+at+1.20.18+AM.png)
+
+
+
+### Obtaining a now token
+
+Once registration is complete login with GitHub, click on **settings** and select **Tokens** tab. 
+
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532392002811_Screen+Shot+2018-07-24+at+1.26.14+AM.png)
+
+
+Click on **copy** for any tokens listed there and your token will be copied to the clipboard for you. You can also choose to create a new token, you can do this by entering a name in the **Create a new token** hint input field and hit enter. You will use this token for deployments. 
