@@ -18,7 +18,7 @@ In this article, you will learn how to configure a continuous deployment pipelin
 
 ## Continuous Deployment Overview
 
-[Continuous deployment](https://www.scaledagileframework.com/continuous-deployment/) (popularly know as CD) is a modern software engineering approach that has to do with automating the release of softwares. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
+[Continuous deployment](https://www.scaledagileframework.com/continuous-deployment/) (popularly known as CD) is a modern software engineering approach that has to do with automating the release of softwares. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
 
 [Continuous Integration](https://www.atlassian.com/continuous-delivery/continuous-integration-intro) (CI) - In continuous integration, when a new code is checked in, a build is generated and tested. The aim is to test every new code to be sure that it doesn’t break the software as a whole. This will require writing test for every update that is pushed. The importance of CI is to ensure a stable codebase at all times especially when there are multiple developers in a team. With this, bugs are discovered easily when the automated tests fail.
 
@@ -32,7 +32,7 @@ In this post, you will learn how to setup a CI server together with a GitHub rep
 
 ## Preparing a Node.js App for Continuous Deployment
 
-You will build a simple hello word app with Node.js. Ensure that you have Node.js installed on your machine before moving ahead. However, if you don’t have it yet, follow this [link](https://nodejs.org/en/download/) to install it. 
+You will build a simple hello world app with Node.js. Ensure that you have Node.js installed on your machine before moving ahead. However, if you don’t have it yet, follow this [link](https://nodejs.org/en/download/) to install it. 
 
 ### Scaffolding a Node.js Web App
 
@@ -99,7 +99,7 @@ This command creates a new directory named `pages`.
 touch pages/index.html
 ```
 
-While this command creates a html file named `index.html` in the pages folder. Now, you have to serve the html file when the user visits the `URL` of your app. Open the `index``.js` file and set it up like so: 
+While this command creates a html file named `index.html` in the pages folder. Now, you have to serve the html file when the user visits the `URL` of your app. Open the `index.js` file and set it up like so: 
 
 ```node
 // import dependencies
@@ -164,7 +164,7 @@ Git is one of the most popular version control systems out there. And so, a web 
 
 ### Creating a GitHub Account
 
-If you don’t have an account with GitHub, visit the [website](https://www.github.com) and create an account or you login to your profile if you do. Creating an account requires a unique username, email with any password of your choice. 
+If you don’t have an account with GitHub, visit the [website](https://www.github.com) and create an account If you have an account already, login to your profile. Creating an account requires a unique username, email with any password of your choice. 
 
 
 ![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532375325519_Screen+Shot+2018-07-23+at+8.48.26+PM.png)
@@ -250,7 +250,7 @@ Some of the amazing features of Now include:
 
 - Free unique URL -  for every deployment made, there is a unique `URL`  generated usually in the form `<appname>-<random string>.now.sh` E.g `helloworld-hddnhdvhsd.now.sh`
 - Process logging - every process from the point of running the command to the point of starting the server for the deployed app is logged on the screen and can be viewed by clicking on any of the deployment instance link found on your dashboard.
-- SSL certificate management - Now uses [Let's Encrypt](https://letsencrypt.org/) to provide your deployments with SSL at no cost thereby. Etc.
+- SSL certificate management - Now uses [Let's Encrypt](https://letsencrypt.org/) to provide your deployments with SSL at no cost. Etc.
 
 Now also offers you the option of purchasing a custom domain. You can read more about Now in the official [docs](https://zeit.co/docs) page. 
 
@@ -332,7 +332,7 @@ In `language:` the technology used for the app is specified, in this case -  Nod
 
 ### Securing Now.sh token with Travis CLI
 
-Security is important when deploying your application as secret keys may be involved. For instance, in your case, the now token is a secret key. Setting the keys as environment variables in Travis CI may seem as the run to approach. Unfortunately, this is not entirely secure. To secure your keys properly, you will need to use the Travis Command Line Interface. To use this, you need to install  rugby and `gem` on your machine. Follow this [documentation](https://github.com/rubygems/rubygems#installation) to achieve that. After you have done that, you can now install Travis CLI using this command:
+Security is important when deploying your application as secret keys may be involved. For instance, in your case, the now token is a secret key. Setting the keys as environment variables in Travis CI may seem as the run to approach. Unfortunately, this is not entirely secure. To secure your keys properly, you will need to use the Travis Command Line Interface. To use this, you need to install  ruby and `gem` on your machine. Follow this [documentation](https://github.com/rubygems/rubygems#installation) to achieve that. After you have done that, you can now install Travis CLI using this command:
 
 ```
 gem install travis
