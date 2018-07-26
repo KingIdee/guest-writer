@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Configuring Continuous Deployment Pipelines on Node.js Web Apps"
-description: "This article will put your through the process of deploying a simple Node.js application on Now.sh. You will use GitHub as your git hosting repository, and Travis CI as your continuous deployment server."
+title: "Configuring Continuous Deployment Pipelines for Web Apps"
+description: "Learn how to configure a Continuous Deployment pipeline for your web applications."
 date: "2018-07-25 08:30"
 author:
   name: "Idorenyin Obong"
@@ -13,16 +13,16 @@ related:
 ---
 
 ## TL;DR: 
-In this article, you will learn how to configure a continuous deployment pipeline for a Node.js web application. For demonstration purposes, you will use Now.sh, GitHub, and TravisCI to automate the pipeline. However, the strategy that you will learn here can be used with other solutions as well (like BitBucket, AWS, and CircleCI, for example).
+In this article, you will learn how to configure a continuous deployment pipeline for a Node.js web application. For demonstration purposes, you will use Now.sh, GitHub, and TravisCI to automate the pipeline. Actually, the strategy can be used with other programming languages (e.g. Python, Java, .NET Core) and tools (like BitBucket, AWS, and Circle CI).
 
 
 ## Continuous Deployment Overview
 
-Continuous deployment popularly know as CD is a modern software engineering approach that has to do with automating the release of softwares. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
+Continuous deployment (popularly know as CD) is a modern software engineering approach that has to do with automating the release of softwares. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
 
 Continuous Integration(CI) - In continuous integration, when a new code is checked in, a build is generated and tested. The aim is to test every new code to be sure that it doesn’t break the software as a whole. This will require writing test for every update that is pushed. The importance of CI is to ensure a stable codebase at all times especially when there are multiple developers in a team. With this, bugs are discovered easily when the automated tests fail.
 
-Continuous Delivery - Continuous delivery moves a step ahead of CI. After testing, the release process is also automated. The aim is to generate a releasable build i.e a build that is stable enough to go into production. This helps to reduce the hassle of preparing for release. In continuous delivery, since there are regular releases, there is a faster feedback.
+Continuous Delivery - Continuous delivery moves a step ahead of CI. After testing, the release process is also automated. The aim is to generate a releasable build (i.e a build that is stable enough to go into production). This helps to reduce the hassle of preparing for release. In continuous delivery, since there are regular releases, there is a faster feedback.
 
 The major difference between continuous delivery and continuous deployment is the way releases are done.  One is manual, while the other is automated. With continuous delivery your software is always at a state where it can be pushed out to production manually.  Whereas, with continuous deployment, any stable working version of the software is pushed to production immediately. Continuous deployment needs continuous delivery, but the reverse is not applicable.
 
@@ -50,31 +50,32 @@ Type your package name, lets say — **hello-world** and press enter afterwards.
 
 After you enter the last field(license), the `package.json` file will be generated for you. You will be asked to confirm the details of your app, simply type **yes** in the terminal. If you open the directory for your app, you will see a `package.json` file. The file will look like this:
 
-
-    {
-      "name": "hello-world",
-      "version": "1.0.0",
-      "description": "A Node.js app to show continuous deployment",
-      "main": "index.js",
-      "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-      },
-      "keywords": [
-        "Node.js",
-        "Express",
-        "TravisCI"
-      ],
-      "author": "KingIdee",
-      "license": "ISC"
-    }
-
+```json
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "A Node.js app to show continuous deployment", 
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+   },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "TravisCI"
+   ],
+  "author": "KingIdee",
+  "license": "ISC"
+}
+```
 
 ### Installing Dependencies
 
 Haven created the `package.json` file, you will need to install the dependencies needed to build your project. You particularly need two dependencies for this one - `express` and `body-parser`. You can install all these dependencies at once by running this command:
 
-
-    npm install express body-parser --save
+```
+npm install express body-parser --save
+```
 
 Once the installation is complete you should see a `node_modules` folder. Additionally, your `package.json` file will contain the dependencies installed and their versions.
 
@@ -82,72 +83,159 @@ Once the installation is complete you should see a `node_modules` folder. Additi
 
 During the setup of the app, the `index.js` file was declared as the entry point of the app. Now, you need to create the file. Still in the app directory, run this command to create the file:
 
-
-    touch index.js
+```
+touch index.js
+```
 
 Next, you have to create the html file. It is usually a good practice to create a folder for your views. So, you would do same here. You can create the folder and file by running these commands in the directory of your app:
  
-
-    mkdir pages
+```
+mkdir pages
+```
 
 This command creates a new directory named `pages`.
 
+```
+touch pages/index.html
+```
 
-    touch pages/index.html
-
-While this command creates a html file named `index.html` in pages folder. Now, you have to serve the html file when the user visits the `URL` of your app. Open the `index``.js` file and set it up like so: 
+While this command creates a html file named `index.html` in the pages folder. Now, you have to serve the html file when the user visits the `URL` of your app. Open the `index``.js` file and set it up like so: 
 
 ```node
-    // import dependencies
-    const express = require('express');
-    const bodyParser = require('body-parser');
-    var path = require('path');
+// import dependencies
+const express = require('express');
+const bodyParser = require('body-parser');
+var path = require('path');
     
-    // initialise express
-    const app = express();
+// initialise express
+const app = express();
     
-    // root endpoint
-    app.get('/', (req, res) => {
-        res.sendFile(path.join(__dirname + '/pages/index.html'));
-    });
+// root endpoint
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname + '/pages/index.html'));
+});
     
-    // select the port in which node server will run
-    const port = 5000;
+// select the port in which node server will run
+const port = 5000;
     
-    // listen to the selected port and log a message once connection is established
-    app.listen(port, () => console.log(`Server is running on port ${port}`));
+// listen to the selected port and log a message once connection is established
+app.listen(port, () => console.log(`Server is running on port ${port}`));
 ```    
 
 This snippet contains all the server logic required for this app. Just one endpoint is declared which loads the `index.html` page. The app will run on port `5000`. Now, you need to add some content to your `index.html` file. Open the file and paste this:
 
 ```html
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Title Page</title>
-        <!-- Bootstrap CSS -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    </head>
-    <body>
-        <h1 class="text-center">Hello World</h1>
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    </body>
-    </html>
+</head>
+<body>
+  <h1 class="text-center">Hello World</h1>  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
 ```
 
 This is a basic HTML code with Bootstrap and Jquery referenced via CDN (Content Delivery Network). It contains a **hello world** text in a `h1` tag to make the text a heading. You can run your server now with this command: 
 
-
-    node index.js
+```
+node index.js
+```
 
 If you visit `http://localhost:5000` , you should see something like this:
 
 
+## Introducing GitHub
+
+Earlier in this article, I mentioned the need for repository to demonstrate this subject matter. A repository is simply means a place where files are stored. You will need to store your project on a remote (online) repository. This term is commonly used when talking about version control systems. Version control systems are systems that keep record of files and changes on them. 
+
+Git is one of the most popular version control systems out there. And so, a web service that can host a git repository is needed. There are many available out there but we will use the most popular of them, GitHub. GitHub is a web service where git repositories are hosted. Actually, they offer more than this and you can read more about GitHub here.
+
+### Creating a GitHub Account
+
+If you don’t have an account with GitHub, visit the [website](https://www.github.com) and create an account or you login to your profile if you do. Creating an account requires a unique username and email with any password of your choice. 
+
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532375325519_Screen+Shot+2018-07-23+at+8.48.26+PM.png)
+
+
+After registration, you will be required to verify your account through your email address to gain full access to all GitHub features.
+
+### Creating a GitHub Repository
+
+GitHub offers public and private repositories. For this demo, you only need a public repository. To create a new repository, open your profile, click the plus button and select **New repository**. Your profile should look like this:
+
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532387287747_Screen+Shot+2018-07-24+at+12.07.29+AM.png)
+
+
+After selecting a new repository, you will be presented with a form like this
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532387443030_Screen+Shot+2018-07-24+at+12.10.07+AM.png)
+
+
+Fill it with the name of your repository and the description. Click the **Create repository button** after you are done. When your repository is created, you are given a `URL` that resembles this `https://github.com/KingIdee/hello-world.git` . Copy it to your clipboard, you will need it soon.
+
+### Pushing your Node.js Project to GitHub
+
+Haven setup your Node.js app and installed dependencies, it is time to push your project online to GitHub. Still in your root directory run the following commands: 
+
+```
+git init
+```
+
+This initialises git in the project directory by creating a `.git` folder which is most times invisible.
+
+```
+git remote add origin REPO_URL
+```
+
+This command connects the local folder to the remote (online) repository.
+
+
+> Replace **REPO_URL** with your own repository `URL` which you copied earlier.
+
+Sometimes, there are particular files you need to ignore when pushing a project to the repository. For this project and most Node projects you need to ignore the `node_modules` folder. Create a `.gitignore` file in the directory like so:
+
+```
+touch .gitignore
+```
+
+Open the file and paste this line: 
+
+```
+/node_modules
+```
+
+> You can add other files you want to ignore as well
+
+Next, you need to commit the changes made to the project folder and push to your remote repository. You can do so by running the following  commands:
+
+```
+git add -A
+```
+
+This command adds all files affected by changes to git except the ones explicitly listed in `.gitignore` file.
+
+```
+git commit -m "first commit"
+```
+
+This command adds a message to the added/changed files to note what changes that occurred. 
+
+```
+git push -u origin master
+```
+
+This command pushes the changes made to the project to the remote repository which was set initially and sets up  the local to track remote changes.
+
+If everything works fine you should see your project online when you visit the repository you created. 
