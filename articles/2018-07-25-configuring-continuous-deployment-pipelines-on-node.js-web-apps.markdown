@@ -18,11 +18,11 @@ In this article, you will learn how to configure a continuous deployment pipelin
 
 ## Continuous Deployment Overview
 
-Continuous deployment (popularly know as CD) is a modern software engineering approach that has to do with automating the release of softwares. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
+[Continuous deployment](https://www.scaledagileframework.com/continuous-deployment/) (popularly know as CD) is a modern software engineering approach that has to do with automating the release of softwares. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
 
-Continuous Integration(CI) - In continuous integration, when a new code is checked in, a build is generated and tested. The aim is to test every new code to be sure that it doesn’t break the software as a whole. This will require writing test for every update that is pushed. The importance of CI is to ensure a stable codebase at all times especially when there are multiple developers in a team. With this, bugs are discovered easily when the automated tests fail.
+[Continuous Integration](https://www.atlassian.com/continuous-delivery/continuous-integration-intro) (CI) - In continuous integration, when a new code is checked in, a build is generated and tested. The aim is to test every new code to be sure that it doesn’t break the software as a whole. This will require writing test for every update that is pushed. The importance of CI is to ensure a stable codebase at all times especially when there are multiple developers in a team. With this, bugs are discovered easily when the automated tests fail.
 
-Continuous Delivery - Continuous delivery moves a step ahead of CI. After testing, the release process is also automated. The aim is to generate a releasable build (i.e a build that is stable enough to go into production). This helps to reduce the hassle of preparing for release. In continuous delivery, since there are regular releases, there is a faster feedback.
+[Continuous Delivery](https://aws.amazon.com/devops/continuous-delivery/) - Continuous delivery moves a step ahead of CI. After testing, the release process is also automated. The aim is to generate a releasable build (i.e a build that is stable enough to go into production). This helps to reduce the hassle of preparing for release. In continuous delivery, since there are regular releases, there is a faster feedback.
 
 The major difference between continuous delivery and continuous deployment is the way releases are done.  One is manual, while the other is automated. With continuous delivery your software is always at a state where it can be pushed out to production manually.  Whereas, with continuous deployment, any stable working version of the software is pushed to production immediately. Continuous deployment needs continuous delivery, but the reverse is not applicable.
 
@@ -160,7 +160,7 @@ If you visit `http://localhost:5000` , you should see something like this:
 
 Earlier in this article, I mentioned the need for repository to demonstrate this subject matter. A repository is simply a place where files are stored. You will need to store your project on a remote (online) repository. The term repository is commonly used when talking about version control systems. Version control systems are systems that keep record of files and changes on them. 
 
-Git is one of the most popular version control systems out there. And so, a web service that can host a git repository is what we will opt for. There are many available out there but we will use the most popular of them, GitHub. [GitHub] (https://www.github.com) is a web service where git repositories are hosted. Actually, they offer more than this and you can read more about GitHub [here](https://github.com/features).
+Git is one of the most popular version control systems out there. And so, a web service that can host a git repository is what we will opt for. There are many available out there but we will use the most popular of them, GitHub. [GitHub](https://www.github.com) is a web service where git repositories are hosted. Actually, they offer more than this and you can read more about GitHub [here](https://github.com/features).
 
 ### Creating a GitHub Account
 
@@ -278,3 +278,89 @@ Once registration is complete login with GitHub, click on **settings** and selec
 
 
 Click on **copy** for any tokens listed there and your token will be copied to the clipboard for you. You can also choose to create a new token, you can do this by entering a name in the **Create a new token** hint input field and hit enter. You will use this token for deployments. 
+
+## Introducing Travis CI
+
+[Travis CI](https://travis-ci.org/) is a continuous integration server. CI servers are used to monitor repositories when there is a change and trigger a pre-configured process on the repository. Travis CI particularly supports only projects on GitHub. The project is usually configured by adding a pipeline file named -  `.travis.yml` file to the root directory of the repository.  
+
+### Creating a Travis Account
+
+To move ahead, you have to signup on [Travis CI](https://travis-ci.org/). Travis CI requires only GitHub signup. Since you 
+have a GitHub account, open the website and signup.
+
+### Configuring Travis CI for your GitHub Repo
+
+After a successful signup, you can see a list of your public repositories on your profile [here](https://travis-ci.org/) while your private repositories are found [here](http://travis-ci.com.). Travis stores public and private repos in separate domains. Go to your public repository list. It should look like this
+
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532392825500_Screen+Shot+2018-07-24+at+1.39.51+AM.png)
+
+
+Select the repository you created earlier and activate it. 
+
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532393198638_Screen+Shot+2018-07-24+at+1.45.28+AM.png)
+
+
+### Configuring Travis in your Application
+
+Go back to the project folder, create a `.travis.yml` file and paste the following code:
+
+```
+language: node_js
+node_js:
+- node
+cache:
+  directories:
+  - node_modules
+before_deploy: npm install now --no-save # installs now cli
+deploy:
+- provider: script
+  # deploys the application to now.sh if all tests pass
+  script: now --public --token $NOW_TOKEN && now alias --token $NOW_TOKEN
+  skip_cleanup: true
+  on:
+    master: true
+- provider: script
+# starts the node server with the entry point script server.js
+  script: npm run server
+  skip_cleanup: true
+```
+
+
+In `language:` the technology used for the app is specified, in this case -  Node.js. The `before_deploy:` section specifies the command to be executed before deployment. Here, the Now CLI is installed. The first `script:` in the `deploy` section deploys the project to Now.sh using Now CLI, the `on:` tells Travis which branch to work with and the second `script` starts the node application.
+
+### Securing Now.sh token with Travis CLI
+
+Security is important when deploying your application as secret keys may be involved. For instance, in your case, the now token is a secret key. Setting the keys as environment variables in Travis CI may seem as the run to approach. Unfortunately, this is not entirely secure. To secure your keys properly, you will need to use the Travis Command Line Interface. To use this, you need to install  rugby and `gem` on your machine. Follow this [documentation](https://github.com/rubygems/rubygems#installation) to achieve that. After you have done that, you can now install Travis CLI using this command:
+
+```
+gem install travis
+```
+
+Congrats! You now have Travis CLI installed. You can now encrypt your `now token` by running this command in your project directory:
+
+```
+travis encrypt NOW_TOKEN=YOUR_TOKEN --add
+```
+
+> Replace YOUR_TOKEN with the token with the token you copied from your Now.sh dashboard.
+
+
+This snippet encrypts `YOUR_TOKEN` and adds the encoded version to `.travis.yml` file under  the`.env` section. If the above command is successful you should see some configurations appear on `.travis.yml` file as shown below:
+
+```
+env:
+    global:
+    secure: DZC4XpjVPoPl4oXKPD2QATP4++vbPUXllQW0XZaUnSp4S/U9zQamciEMPjvwot324CC/nWm8eL5EyY4WIEyhvhbWwtl85GIYJJeSVhJbkOcwX9Z8Z95aE+9ajI0INNgE9xS0f7jHYqUOSGTDz0aagGrl8ZgA/qI7qL7QZKLgX07e3nh5Zgyjtrgvyukhchtyiuhoetryuiozb4EoUUc8LJAZJPXBcok/qAmuxPQe6vZt5OTmhNPeL0efdRt861dql45A2qHKOGREYm3Ma0aV1IuqeCLrmoJkT5u7oGd+pG+OWh7LlgA1bjFbTufT/2YiGqCKDNLwbsX8OzCqOluOSnm8Rb32Yr6VJIw/ulVweg+ZRsEIdNaY=
+``` 
+
+The key generated above will be used for deploying your application to Now.
+
+## Testing the Continuous Deployment Pipeline
+
+### Pushing Your First Change
+
+### Pushing Your Second Change
+
+## Conclusion
