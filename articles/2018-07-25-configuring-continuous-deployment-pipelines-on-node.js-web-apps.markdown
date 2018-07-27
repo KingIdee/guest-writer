@@ -18,7 +18,7 @@ In this article, you will learn how to configure a continuous deployment pipelin
 
 ## Continuous Deployment Overview
 
-[Continuous deployment](https://www.scaledagileframework.com/continuous-deployment/) (popularly known as CD) is a modern software engineering approach that has to do with automating the release of softwares. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
+[Continuous deployment](https://www.scaledagileframework.com/continuous-deployment/) (popularly known as CD) is a modern software engineering approach that has to do with automating the release of software. Instead of the usual manual method of pushing out a software to production, continuous deployment aims to ease and automate this process with the use of pipelines. In continuous deployment, an update to the source code means an update to the production server too provided all tests are passed. Continuous deployment is often mistaken with continuous integration and continuous delivery. For you to properly get a hang of this concept, let us distinguish the other two concepts.
 
 [Continuous Integration](https://www.atlassian.com/continuous-delivery/continuous-integration-intro) (CI) - In continuous integration, when a new code is checked in, a build is generated and tested. The aim is to test every new code to be sure that it doesn’t break the software as a whole. This will require writing test for every update that is pushed. The importance of CI is to ensure a stable codebase at all times especially when there are multiple developers in a team. With this, bugs are discovered easily when the automated tests fail.
 
@@ -330,6 +330,20 @@ deploy:
 
 In `language:` the technology used for the app is specified, in this case -  Node.js. The `before_deploy:` section specifies the command to be executed before deployment. Here, the Now CLI is installed. The first `script:` in the `deploy` section deploys the project to Now.sh using Now CLI, the `on:` tells Travis which branch to work with and the second `script` starts the node application.
 
+Next, open your `package.json` file too and add this in the file:
+ 
+```json
+{
+ [...]
+ "scripts": {
+   "start": "npm run server",
+   "server": "node index.js"
+  }
+ }
+```
+ 
+The `npm run server` which was defined in `.travis.yml` didn’t exist in `package.json` file until you just added it now.  
+
 ### Securing Now.sh token with Travis CLI
 
 Security is important when deploying your application as secret keys may be involved. For instance, in your case, the now token is a secret key. Setting the keys as environment variables in Travis CI may seem as the run to approach. Unfortunately, this is not entirely secure. To secure your keys properly, you will need to use the Travis Command Line Interface. To use this, you need to install  ruby and `gem` on your machine. Follow this [documentation](https://github.com/rubygems/rubygems#installation) to achieve that. After you have done that, you can now install Travis CLI using this command:
@@ -359,8 +373,44 @@ The key generated above will be used for deploying your application to Now.
 
 ## Testing the Continuous Deployment Pipeline
 
+To test your deployment pipeline all you need to do is add or change files, commit and push to your remote repository which you created in the course of this tutorial.
+
 ### Pushing Your First Change
+
+Change the text in your `index.html` file to something like - **Hello World! Watch this space.** Commit your changes and push to GitHub by running the following commands individually:
+
+```bash
+git add -A
+    
+git commit -m "configured deployment pipeline with travis"
+    
+git push
+```
+
+Once the changes has been pushed to your repository a deployment process is triggered and Travis CI takes over the build process. It handles this process based on the configurations in `.travis.yml` file which you created in your root directory. As this process is going on you should see the log on your Travis dashboard.
+
+Once the build is completed, visit your Now dashboard you should see the current deployment instance created with a unique URL which you can visit to view your deployed application on the browser.
 
 ### Pushing Your Second Change
 
+Next, you can make more changes to your `index.html` file, commit  the changes and push again. Watch your changes go live in minutes. 
+
+```bash
+git add -A
+    
+git commit -m "made adjustment to index.html files"
+    
+git push
+```
+
+
+Once again visit your Now dashboard you should see the current deployment instance created with a unique URL which you can visit to view your deployed application on the browser. The deployment instances are displayed as shown below:
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_256435711D8498B15897840D6DBA9A5C15B103EC205218F06CA3BF9F3DF56283_1532681757775_Screen+Shot+2018-07-27+at+9.55.14+AM.png)
+
+
 ## Conclusion
+
+In this article you have learnt about one of the buzzing terms in modern software development - continuous deployments. You learnt about git hosting web services, CI servers, a PaaS, and their respective duties in continuous deployments. Particularly, you used tools like GitHub, Travis CI, and Now.sh. You even went ahead to create a Node.js app and deploy by yourself. Isn’t that awesome? 
+
+With this knowledge, you can go ahead and apply continuous integration to your much more complex projects. You can even decide to try tools similar to what is used here, like trying a different CI server, or a new git hosting web service. I look forward to seeing what you will build. Cheers! 
