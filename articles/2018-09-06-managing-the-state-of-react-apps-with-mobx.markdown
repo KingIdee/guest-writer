@@ -13,20 +13,373 @@ related:
 ---
 
 **TL;DR:** 
-MobX is one of the popular state management libraries out there. It is frequently used with React also. In this article, you will learn how to manage your states with MobX in a React app. We will build a sample along to show the practical implementaions.
+MobX is one of the popular state management libraries out there. It is frequently used with React also. In this article, you will learn how to manage the state of your React app with MobX.
 
 ## Prerequisites
-Before diving into this article fully, it is expected that you have a prior knowledge of React already. If you need an explicit tutorial to get you started, you can find one [here](https://auth0.com/blog/react-tutorial-building-and-securing-your-first-app/).You also need to have [Node](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/) installed on your machine.
+Before diving into this article fully, it is expected that you have a prior knowledge of React already. If you need an explicit tutorial to get you started, you can find one [here](https://auth0.com/blog/react-tutorial-building-and-securing-your-first-app/). You also need to have [Node](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/) installed on your machine.
 
 
 ## State Management in React
 
-Before understanding the concept of state management, you have to understand what a state is. A state is the data layer for your application. Explaining further, we can say a state is an object that contains what is to displayed on your application. For instance, if you want to display a list of items on your app, your state will contain the objects(items) you want to display. They influence how a component behaves and how itis rendered. Yes! It is as simple as that. 
+Before understanding the concept of state management, you have to understand what a state is. A state in this context, is the data layer of your application. Explaining further, we can say a state is an object that contains what is to displayed on your application. For instance, if you want to display a list of items on your app, your state will contain the objects(items) you want to display. States influence how a component behaves and how it is rendered. Yes! It is as simple as that. 
 
-State management therefore means monitoring and managing data(state) of our app. Definitely, almost all production-ready apps will have a state (data layer) and so managing states has become one of the most important part of any modern application today. 
-
-Basically, there are three alternatives towards managing states in React. They are: 
+State management therefore means monitoring and managing data(state) of your app. Definitely, almost all production-ready apps will have a state (data layer) and so managing states has become one of the most important part of any modern app today. Basically, there are three alternatives towards managing states in React. They are: 
 
 - Redux
 - React Context API and 
 - MobX
+
+Let us take a brief look at the first two alternatives.
+
+- Redux - [Redux](https://redux.js.org/) is the most popular state management solution for React apps. Redux strictly abides to the 'single source of truth' principle. With this, the state is kept in one location (the store) and made a read-only entity. Read-only you say, how then do I handle new data? Redux revovles around three concepts: the store, the reducer, and actions. The store holds the state, the action represents the intent to change the state, and the reducer specify how the application's state changes in response to actions. The only way to change the state is to emit an action. The reducer listens to a set of actions and returns a new state. The reducer is seen as the most important of these concepts. You can check this [practical tutorial on Redux](https://auth0.com/blog/redux-practical-tutorial/) for in-depth explanations.
+
+
+- React Context API  - [React Context API ]() is another alternative...
+
+
+In the next section, we will look at the third alternative we have at our disposal, MobX.
+
+## MobX Introduction
+
+[MobX](https://mobx.js.org/) is another state management library available for React apps. It uses a more reactive process and it is slowly gaining popularity and becoming the main contender with Redux and other state management solutions. MobX is not just a library for React apps alone, it is also suitable for use with other javaScript libraries and frameworks that power the frontend of a web app.
+
+Backed by reputable [companies several individuals](https://mobx.js.org/index.html#backers) and with a total number of 16,639 stars ( as at the time of writing) on [GitHub](https://github.com/mobxjs/mobx), MobX is gradually becoming a first choice state management solutions for React applications. For additional information, visit the its official [documentation](https://mobx.js.org/).
+
+
+## MobX and React in Practice
+
+In this post, you will build a user review dashboard. In the review dashboard, a user will be able write a review using an input field, select a rating from a dropdown and finally submit the review using a **SUBMIT REVIEW**.
+
+MobX will be used to manage the state of user’s interaction with the app, which includes, updating the list of reviews in the table, calculating the total number of reviews submitted so far using computed values and lastly, obtaining the average star rating. Once you are done, your app will look similar to this:
+
+
+### Creating a new React app
+
+You need the `create-react-app` CLI tool to quickly bootstrap your React app without the hassle of build configurations. You can install it by running:
+
+```bash
+npm install -g create-react-app
+```
+
+After installation, you will have access to the `create-react-app` command. Go ahead to create your app by running:
+
+```bash
+npx create-react-app react-mobx-tutorial
+```
+
+### Installing Dependencies
+
+After creating your app, the next obvious step is to install the required dependencies. You need two dependencies, the `mobx-react` dependency to add MobX to your app and the `react-star-rating-component` dependency to easily implement a rating bar in the app. You can install them like so:
+
+```bash
+# move into app directory
+cd react-mobx-tutorial
+
+# install deps
+npm install mobx mobx-react react-star-rating-component --save 
+```
+
+### Creating a Store with MobX
+
+The first thing to add in your app is a store that will be powered by MobX. This will ensure that the app reads from and writes to a global state object instead of its own component state. To set this up, create a new folder named `Store` within the `src` folder and create a new file called `Store.js` inside of it. Set up the file like so:
+
+```javascript
+
+// ./src/Store/Store.js
+class Store {
+  reviewList = [
+    {review: "This is a nice article", stars: 2},
+    {review: "A lovely review", stars: 4},
+  ];
+
+  addReview(e) {
+    this.reviewList.push(e);
+  }
+
+  get reviewCount() {
+    return this.reviewList.length;
+  }
+
+  get averageScore() {
+    let avr = 0;
+    this.reviewList.map(e => avr += e.stars);
+    return Math.round(avr / this.reviewList.length * 100) / 100;
+  }
+}
+
+export default Store;
+```
+
+In this store, there is a `reviewList` containing some items already. This is the list your whole app will feed on. The store has some other custom methods created like `addReview()` - to add a new item to the list, getter methods `averageScore()` and `reviewCount()` to get the average score and size of the list respectively.
+
+Next, you will expose these methods as observables so that other parts of your application can make use of it. MobX a set of decorators that defines how observable properties will behave. You have to declare them using the `decorate` keyword. Add this to your `App.js` file:
+
+```javascript
+import {decorate, observable, action, computed} from 'mobx';
+
+decorate(Store, {
+  reviewList: observable,
+  clearReviews: action,
+  addReview: action,
+  averageScore: computed,
+  reviewCount: computed
+});
+```
+
+From this snippet, the decorators are imported from the mobx package and assigned to the various methods to be exposed. 
+
+### Updating the Store on MobX
+
+Next, you will create a new component - the form component that will collect the user's review response and update the contents already specified in the MobX store. For proper organisation, create a folder just for your components. Create a new folder named `components` within the `src` folder. After this, go ahead to create a new file called `Form.js` inside of it. Set up the file like so:
+
+```javascript
+// ./src/components/Form.js
+
+import React, {Component} from 'react';
+
+export default class Form extends Component {
+
+  submitReview = (e) => {
+    e.preventDefault();
+    const review = this.review.value;
+    const stars = Number(this.stars.value);
+    this.props.store.addReview({review, stars})
+  };
+
+  render() {
+    return (
+      <div className="formSection">
+        <div className="form-group">
+          <p>Submit a Review</p>
+        </div>
+        <form onSubmit={this.submitReview}>
+          <div className="row">
+            <div className="col-md-4">
+              <div className="form-group">
+                <input type="text" name="review" ref={node => {
+                  this.review = node;
+                }} id="review" placeholder="Write a review" className="form-control"/>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="form-group">
+                <select name="stars" id="stars" className="form-control" ref={node => {
+                  this.stars = node;
+                }}>
+                  <option value="1">1 Star</option>
+                  <option value="2">2 Star</option>
+                  <option value="3">3 Star</option>
+                  <option value="4">4 Star</option>
+                  <option value="5">5 Star</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="form-group">
+                <button className="btn btn-success" type="submit">SUBMIT REVIEW</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    )
+  }
+}
+```
+
+In this snippet, you created a form that contains an input field, a dropdown, and a button. On submission of the form, the review is added to the store via the `submitReview` method. 
+
+### Reacting to Changes on MobX
+
+Once the form has been submitted and the store has the updated contents, you need to immediately display the updated data to your users. For this purpose, you need a component that will display the average number of stars from reviews given. Navigate to the `components` folder and create a new file named `Dashboard.js`, set it up like so:  
+
+```javascript
+// ./src/components/Dashboard.js
+
+import React, {Component} from 'react';
+import {observer} from 'mobx-react'
+
+
+class Dashboard extends Component {
+  render() {
+    const {store} = this.props;
+    return (
+      <div className="dashboardSection">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card text-white bg-primary mb-6">
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-6">
+                    <i className="fa fa-comments fa-5x" />
+                  </div>
+                  <div className="col-md-6 text-right">
+                    <p id="reviewCount">{store.reviewCount}</p>
+                    <p className="announcement-text">Reviews</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="card text-white bg-success mb-6">
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-6">
+                    <i className="fa fa-star fa-5x" />
+                  </div>
+                  <div className="col-md-6 text-right">
+                    <p id="averageScores">{store.averageScore}</p>
+                    <p className="announcement-text">Average Scores</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+Dashboard = observer(Dashboard);
+export default Dashboard;
+```
+This component displays the total count of reviews and the average number of stars. Another important thing to note, is the use of the `observer()` function. This turns the component into a reactive component and smart. With this in place, any changes made to any content in store within the component above will be re-rendered thereby updating the user interface with new contents in realtime.
+
+You won't just stop at giving the count of reviews and average rating, you need to display the comments made too. Create another file named `Reviews.js` and set it up like so:
+
+```javascript
+import React, {Component} from 'react';
+import {observer} from 'mobx-react';
+import StarRatingComponent from 'react-star-rating-component';
+
+const List = (props) => {
+  return (
+    <li className="list-group-item">
+      <div className="float-left">{props.data.review}</div>
+      <div className="float-right">
+        <StarRatingComponent name="reviewRate" starCount={props.data.stars}/>
+      </div>
+    </li>
+  )
+};
+
+class Reviews extends Component {
+  render() {
+    const {store} = this.props;
+    return (
+      <div className="reviewsWrapper">
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div className="card-header">
+                <i className="fa fa-comments" /> Reviews
+              </div>
+              <ul className="list-group list-group-flush">
+                {store.reviewList.map((e, i) =>
+                  <List
+                    key={i}
+                    data={e}
+                  />
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+Reviews = observer(Reviews);
+
+export default Reviews;
+```
+
+In the snippet above, the `StarRatingComponent` installed earlier is used to display the number of stars selected by the user during review. Also, a `List` component is created here. This component is what will be rendered as each list item when you iterate over the total list of submitted reviews. The `Reviews` is also wrapped with an `observer()` function to make the component recieve and display changes in the MobX store as they come.
+
+
+### Wrapping Up your MobX App
+
+To wrap up, you will modify your `App.css` file. Open the file and replace the contents like so:
+
+```css
+.formSection {
+  margin-top: 30px;
+}
+
+.formSection p {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.dashboardSection {
+  margin-top: 50px;
+}
+
+.reviewsWrapper {
+  margin-top: 50px;
+}
+```
+
+Here, you declared classes with properties 
+
+Next, you will finialise your `App.js` file. Open your `App.js` file and add this:
+
+```javascript
+import React, {Component} from 'react';
+import './App.css';
+import Form from './components/Form';
+import Dashboard from './components/Dashboard';
+import Reviews from './components/Reviews';
+import Store from './Store/Store';
+
+const reviewStore = new Store();
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Form store={reviewStore}/>
+        <Dashboard store={reviewStore}/>
+        <Reviews store={reviewStore}/>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+Here in this snippet, the earlier created components are imported in order to render the complete UI. Lastly, the instance of the store created earlier - `reviewStore` is passed as a props to all the components.
+
+Finally, update your `index.html` file as follows. First, add the following CDNs for font awesome and Bootstrap: 
+
+```html
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+```
+Secondly, change the text within the `<title>` tag like so:
+
+```html
+<title> React and MobX </title>
+```
+
+Now, navigate back to the project folder and run the command below to start the app:
+
+```javascript
+npm start
+```
+
+Visit the application on http://localhost:3000/
+
+
+## Conclusion
+
+In this post, you have learnt about state management in React apps. You learnt about the alternatives for managing state in React apps, most especially, MobX. You were able to build an app to show the most important concepts in MobX. I strongly believe in using the right tools depending on the project’s requirement. MobX  might not be the most popular, but by far it is very easy to start with and seamless to integrate into a new or an existing application. I do hope that you found this tutorial worthwhile. 
