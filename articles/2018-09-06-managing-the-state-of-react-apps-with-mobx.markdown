@@ -31,7 +31,7 @@ State management therefore means monitoring and managing the data(state) of your
 The reducer does not mutate the current state. It copies the current state, modifies it based on actions emitted and returns a new state. This way, your state is not mutated in an irregular manner. The reducer is seen as the most important of the three concepts. You can check this [practical tutorial on Redux](https://auth0.com/blog/redux-practical-tutorial/) for further in-depth explanations on how Redux works.
 
 ### React Context API
-The [React Context API]() is another alternative for state management in your React app. This is not a library like the earlier mentioned alternative. Rather, this is a framework in built solution. Actually, this API is not something new, it had existed in React a long while ago. It only reached a mature stage when React 16.3 was released. In fact, Redux uses this API behind the scenes. This API provides a way to pass data down a React component tree without explicitly passing it through all the child components. This API revolves around two components, the `Provider` - used by a component located in a higher hierarchy of the  `Component` tree to provide the data, the `Consumer` component - used by a `Component` down the  hierarchy to consume data. You can read more about this API[here](https://auth0.com/blog/react-context-api-managing-state-with-ease/) to learn more.
+The [React Context API](https://reactjs.org/docs/context.html#api) is another alternative for state management in your React app. This is not a library like the earlier mentioned alternative. Rather, this is a framework in built solution. Actually, this API is not something new, it had existed in React a long while ago. It only reached a mature stage when React 16.3 was released. In fact, Redux uses this API behind the scenes. This API provides a way to pass data down a React component tree without explicitly passing it through all the child components. This API revolves around two components, the `Provider` - used by a component located in a higher hierarchy of the  `Component` tree to provide the data, the `Consumer` component - used by a `Component` down the  hierarchy to consume data. You can read more about this API[here](https://auth0.com/blog/react-context-api-managing-state-with-ease/) to learn more.
 
 In the next section, you will learn about the third alternative at your disposal, MobX.
 
@@ -69,21 +69,21 @@ class ClassName {
 }
 ```
 
-In this snippet, if the value of `test` changes, the `computedTest` method is equally computed and the return value is updated automatically. So, with computed values, MobX can automatically compute values when any observable property the method/object changes. Computed values are derived from observables.
+In this snippet, if the value of `test` changes, the `computedTest` method is equally computed and the return value is updated automatically. So, with computed values, MobX can automatically compute values when any observable property needed by the method/object changes. Computed values are derived from observables.
 
 
 ### Reactions on MobX
 
 Reactions are very much similar to computed values. The difference here is that instead of computing and returning a value, a reaction simply triggers a side effect, more like it performs a side operation. Reactions occur as a result of changes on observables. Reactions  could affect the UI or they could be background actions. Mobx provides 3 main types of reaction functions `when`, `autorun` and `reaction`. Let us look at what these functions do:
 
-- `when` : accepts two functions as parameters, the predicate and effect. It runs and observes the first function (the predicate) until it returns true, and then runs the effect function. After this, it disposes, and stops reacting observed property. Here is an example of how this function works:
+`when` : accepts two functions as parameters, the predicate and effect. It runs and observes the first function (the predicate) until it returns true, and then runs the effect function. After this, it disposes, and stops reacting observed property. Here is an example of how this function works:
 
 ```javascript
 when(
   // predicate
   () => this.isEnabled,
-	// effect
-	() => this.exit()
+  // effect
+  () => this.exit()
 );
 ```
 
@@ -97,6 +97,7 @@ const dispose = autorun(() => {
   console.log("My age is: ", age.get())
 })
 ```
+
 With this in place, anytime the variable `age` changes, the `autorun` function stored in `dispose` logs it out. This function is disposed once you call:
 
 ```javascript
@@ -121,8 +122,8 @@ const todos = observable([
 ]); 
 
 const reactionSample = reaction(
-    () => todos.map(todo => todo.title),
-    titles => console.log("Reaction: ", titles.join(", "))
+  () => todos.map(todo => todo.title),
+  titles => console.log("Reaction: ", titles.join(", "))
 );
 ```
 
@@ -149,6 +150,8 @@ Actions are anything that modify the state. You can mark your actions using the 
   this.variable = newVariable;
 }
 ```
+
+This function is updating the value of an observable and so it is marked with  - `@action`.
 
 ## MobX and React in Practice
 
@@ -213,7 +216,7 @@ export default Store;
 
 In this store, there is a `reviewList` containing some items already. This is the list your whole app will feed on. The store has some other custom methods created like `addReview()` - to add a new item to the list, getter methods `averageScore()` and `reviewCount()` to get the average score and size of the list respectively.
 
-Next, you will expose these methods as observables so that other parts of your application can make use of it. MobX has a set of decorators that defines how observable properties will behave. You have to declare them using the `decorate` keyword. Add this to your `App.js` file:
+Next, you will expose these methods as observables so that other parts of your application can make use of it. MobX has a set of decorators that defines how observable properties will behave which was discussed earlier. You have to declare them using the `decorate` keyword. Add this to your `App.js` file:
 
 ```javascript
 import {decorate, observable, action, computed} from 'mobx';
@@ -226,7 +229,7 @@ decorate(Store, {
 });
 ```
 
-From this snippet, the decorators are imported from the mobx package and assigned to the various methods to be exposed. 
+From this snippet, the decorators are imported from the mobx package and assigned to the various methods to be exposed. Each object is assigned a decorator based on how it will perform and react.
 
 ### Updating the Store on MobX
 
