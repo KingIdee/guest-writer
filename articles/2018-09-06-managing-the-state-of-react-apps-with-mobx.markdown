@@ -23,27 +23,25 @@ Before diving into this article fully, it is expected that you have a prior know
 
 Before understanding the concept of state management, you have to understand what a state is. A state in this context, is the data layer of your application. Explaining further, you can say a state is an object that contains what is to displayed on your application. For instance, if you want to display a list of items on your app, your state will contain the items you intend to display. States influence how a component behaves and how it is rendered. Yes! It is as simple as that. 
 
-State management therefore means monitoring and managing the data(state) of your app. Almost all apps have states in one way or the other and so, managing states has become one of the most important part of building any modern app today. Basically, there are three alternatives towards managing states in React. They include: Redux, React Context API and MobX. You will first understand the first two alternatives before diving deeper into the third.
+State management therefore means monitoring and managing the data(state) of your app. Almost all apps have states in one way or the other and so, managing states has become one of the most important part of building any modern app today. Basically, there are three alternatives towards managing states in React. They include: Redux, React Context API and MobX. 
 
 ### Redux 
-[Redux](https://redux.js.org/) is the most popular state management solution for React apps. Redux strictly abides to the 'single source of truth' principle. With this, the state is kept in one location (the store) and made a read-only entity. Read-only you say, how then do I handle new data? Redux revolves around three concepts: the store, the reducer, and actions. The store holds the state, the action represents the intent to change the state, and the reducer specify how the application's state changes in response to actions. The only way to change the state is to emit an action. The reducer listens to a set of actions and returns a new state. 
+[Redux](https://redux.js.org/) is the most popular state management solution for React apps. Redux strictly abides to the 'single source of truth' principle. With this, the state is kept in one location (the store) and made a read-only entity. Redux revolves around three concepts: the store, the reducer, and actions. The store holds the state, the action represents the intent to change the state, and the reducer specify how the application's state changes in response to actions. The only way to change the state is first, to emit an action. The reducer listens to a set of actions and returns a new state based on action performed. 
 
-The reducer does not mutate the current state. It copies the current state, modiefies it based on actions emitted and returns a new state. This way, your state is not mutated in an unorderly manner, thereby causing irregular bugs.
-
-The reducer is seen as the most important of these concepts. You can check this [practical tutorial on Redux](https://auth0.com/blog/redux-practical-tutorial/) for further in-depth explanations on how Redux works.
+The reducer does not mutate the current state. It copies the current state, modifies it based on actions emitted and returns a new state. This way, your state is not mutated in an irregular manner. The reducer is seen as the most important of the three concepts. You can check this [practical tutorial on Redux](https://auth0.com/blog/redux-practical-tutorial/) for further in-depth explanations on how Redux works.
 
 ### React Context API
-The [React Context API]() is another alternative for state management in your React app. This is not a library like the earlier mentioned alternative. Rather, this is a framework in built solution. Actually, this API is not something new, it had existed in React a long while ago. It only reached a mature state when React 16.3 was released. In fact, Redux uses this API under the hood. This API provides a way to pass data down a React component tree without explicitly passing it through all the child components. This API revolves around two components, the `Provider` - used in a component located in a higher hierarchy of the  `Component` tree, the `Consumer` component - used by a `Component` down the  hierarchy to consume data. You can read more about it at[this blog post](https://auth0.com/blog/react-context-api-managing-state-with-ease/) to learn more.
+The [React Context API]() is another alternative for state management in your React app. This is not a library like the earlier mentioned alternative. Rather, this is a framework in built solution. Actually, this API is not something new, it had existed in React a long while ago. It only reached a mature stage when React 16.3 was released. In fact, Redux uses this API behind the scenes. This API provides a way to pass data down a React component tree without explicitly passing it through all the child components. This API revolves around two components, the `Provider` - used by a component located in a higher hierarchy of the  `Component` tree to provide the data, the `Consumer` component - used by a `Component` down the  hierarchy to consume data. You can read more about this API[here](https://auth0.com/blog/react-context-api-managing-state-with-ease/) to learn more.
 
-In the next section, you will have a more detailed look at the third alternative we have at our disposal, MobX.
+In the next section, you will learn about the third alternative at your disposal, MobX.
 
 ## MobX Introduction
 
-[MobX](https://mobx.js.org/) is another state management library available for React apps. It uses a more reactive process and it is slowly gaining popularity in the community. MobX is not just a library for React apps alone, it is also suitable for use with other javaScript libraries and frameworks that power the frontend of web apps. MobX is sponsored by reputable companies such as [Algolia](https://www.algolia.com/), [Coinbase](https://www.coinbase.com), etc. MobX hit 16,719 stars on [GitHub](https://github.com/mobxjs/mobx) at the time of writing. It is definitely becoming a solid choice for state management in React applications. To get up to speed, you can visit its official [documentation](https://mobx.js.org/). In the next section, you will learn more about MobX.
+[MobX](https://mobx.js.org/) is another state management library available for React apps. It uses a more reactive process and it is slowly gaining popularity in the community. MobX is not just a library for React apps alone, it is also suitable for use with other javaScript libraries and frameworks that power the frontend of web apps. MobX is sponsored by reputable companies such as [Algolia](https://www.algolia.com/), [Coinbase](https://www.coinbase.com), etc. MobX hit 16,719 stars on [GitHub](https://github.com/mobxjs/mobx) at the time of writing. That obviously tells you it is becoming a solid choice for state management in React applications. To get up to speed, you can visit its official [documentation](https://mobx.js.org/). In the next section, you will learn more about MobX.
 
 ### Observable State on MobX
 
-Observable state is one of the main concepts of MobX. The idea behind this concept is to make an object able to emit new changes on them to the observers. You can achieve this with the `@observable` decorator. Let's say you have a variable named `counter` that you expect to change with time. If you intend get updates as this variable changes, you can make it observable like so:
+Observable state is one of the main concepts of MobX. The idea behind this concept is to make an object able to emit new changes on them to the observers. You can achieve this with the `@observable` decorator. Let's say you have a variable named `counter` that you expect to change with time. You can make it observable like so:
 
 ```javascript
 @observable counter = 0
@@ -60,7 +58,7 @@ Where `ClassName` is the name of the class where the `counter` object is. This d
 
 ### Computed Values on MobX
 
-Computed values are another set of important concept of MobX. They are represented with the `@computed` decorator. Computed values work in hand with observable states. With computed values, you can automatically derive values. Say you have a snippet like this:
+Computed value is another important concept of MobX. They are represented with the `@computed` decorator. Computed values work in hand with observable states. With computed values, you can automatically derive values. Say you have a snippet like this:
 
 ```javascript
 class ClassName {
@@ -156,7 +154,7 @@ Actions are anything that modify the state. You can mark your actions using the 
 
 In this post, you will build a simple user review dashboard. In the review dashboard, a user will enter a review using an input field, select a rating from a dropdown and finally submit the review. The dashboard will show the total number of reviews, the average star rating, and a list of all the reviews. In this sample, MobX will be used to manage certain operations like updating the reviews in realtime on the dashboard, calculating the total number of reviews submitted and lastly, obtaining the average star rating. Once you are done, your app will look similar to this:
 
-//Image of app missing
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_1F4CEC0181EE662CDA49B1B63F312B2B97326A5FCDC330DCAC9E024ED6AFCC10_1536899361393_Screenshot+2018-09-14+at+5.28.15+AM.png)
 
 ### Creating a new React app
 
