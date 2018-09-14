@@ -25,14 +25,15 @@ Before understanding the concept of state management, you have to understand wha
 
 State management therefore means monitoring and managing the data(state) of your app. Definitely, almost all production-ready apps will have a state (data layer) and so, managing states has become one of the most important part of any modern app today. Basically, there are three alternatives towards managing states in React. They are Redux, React Context API and MobX. Let us take a brief look at the first two alternatives.
 
-- Redux - [Redux](https://redux.js.org/) is the most popular state management solution for React apps. Redux strictly abides to the 'single source of truth' principle. With this, the state is kept in one location (the store) and made a read-only entity. Read-only you say, how then do I handle new data? Redux revovles around three concepts: the store, the reducer, and actions. The store holds the state, the action represents the intent to change the state, and the reducer specify how the application's state changes in response to actions. The only way to change the state is to emit an action. The reducer listens to a set of actions and returns a new state. 
+### Redux 
+[Redux](https://redux.js.org/) is the most popular state management solution for React apps. Redux strictly abides to the 'single source of truth' principle. With this, the state is kept in one location (the store) and made a read-only entity. Read-only you say, how then do I handle new data? Redux revovles around three concepts: the store, the reducer, and actions. The store holds the state, the action represents the intent to change the state, and the reducer specify how the application's state changes in response to actions. The only way to change the state is to emit an action. The reducer listens to a set of actions and returns a new state. 
 
 > The reducer does not mutuate the current state. It copies the current state, modiefies it based on actions emiited and returns a new state. This way, your state is not mutated in an unorderly manner, therby causing irregular bugs.
 
 The reducer is seen as the most important of these concepts. You can check this [practical tutorial on Redux](https://auth0.com/blog/redux-practical-tutorial/) for further in-depth explanations on how Redux works.
 
-- React Context API  - [React Context API]() is another alternative for state management in your React app. This is not a library like the earlier mentioned alternative. Rather, this is a framework in built solution. Actually, this API is not something new, it had existed in React a long while ago. It only reached a mature state when React 16.3 was released. In fact, Redux uses this API under the hood. This API provides a way to pass data down a React component tree without explictly passing it through all the child components. This API revolves around two components, the `Provider` - used in a component located in a higher hierarchy of the  `Component` tree, the `Consumer`
-component - used to consume the data from a a `Component` down the  hierarchy. You can read more about it at[this blog post](https://auth0.com/blog/react-context-api-managing-state-with-ease/) to learn more.
+### React Context API
+The [React Context API]() is another alternative for state management in your React app. This is not a library like the earlier mentioned alternative. Rather, this is a framework in built solution. Actually, this API is not something new, it had existed in React a long while ago. It only reached a mature state when React 16.3 was released. In fact, Redux uses this API under the hood. This API provides a way to pass data down a React component tree without explictly passing it through all the child components. This API revolves around two components, the `Provider` - used in a component located in a higher hierarchy of the  `Component` tree, the `Consumer` component - used by a `Component` down the  hierarchy to consume data. You can read more about it at[this blog post](https://auth0.com/blog/react-context-api-managing-state-with-ease/) to learn more.
 
 In the next section, you will have a more detailed look at the third alternative we have at our disposal, MobX.
 
@@ -59,8 +60,6 @@ decorate(ClassName, {
 ```
 Where `ClassName` is the name of the class where the `counter` object is. This decorator can be used on instance fields and property getters. 
 
-Another decorator provided by MobX that goes with the `@observable` decorator is the `@observer` decorator. The `@observer` is used by the component that holds the object. With this, wherever in your component that the `counter` object is displayed,  as soon as the value updates, the new value is displayed.
-
 ### Computed Values on MobX
 
 Computed values are another set of important concept of MobX. They are represented with the `@computed` decorator. Computed values work in hand with observable states. With computed values, you can automatically derive values. Say you have a snippet like this:
@@ -77,16 +76,89 @@ class ClassName {
 In this snippet, if the value of `test` changes, the `computedTest` method is equally computed and the return value is updated automatically. So, with computed values, MobX can automatically compute values when any observable property the method/object changes. Computed values are derived from observables.
 
 
+### Reactions on MobX
+
+Reactions are very much similar to computed values. The difference here is that instead of computing and returning a value, a reaction simply triggers a side effect, more like it performs a side operation. Reactions occur as a result of changes on observables. Reactions  could affect the UI or they could be background actions. Mobx provides 3 main types of reaction functions when, autorun and reaction. Let us look at what these functions do:
+
+- `when` : accepts two functions as parameters, the predicate and effect. It runs and observes the first function (the predicate) until it returns true, and then runs the effect function. After this, it disposes, and stops reacting observed property. Here is an example of how this function works:
+
+```javascript
+when(
+	// predicate
+	() => this.isEnabled,
+	// effect
+	() => this.exit()
+);
+```
+This function works hand in hand with the observables and coputed values such that the `isEnabled` function located in the component class could be marked with `@computed` decorator so that its value would be computed automatically. And, of course, for it to be marked `@computed`, it is definitely listening to an observable. You might have a different use
+
+The next reaction function is the autorun function. Unlike the `when` function, the `autorun` function takes in one function and keeps running it untill it is manually disposed. Here is how an `autorun` function can be used:
+
+```javascript
+@observable age = 10
+const dispose = autorun(() => {
+  console.log("My age is: ", age.get())
+})
+```
+With this in place, anytime the variable `age` changes, the `autorun` function stored in `dispose` logs it out. This function is disposed once you call:
+
+```javascript
+dispose();
+```
+
+The `reaction` function mandatorily accepts two functions, (data function and side effect function) and an optional third argument. It is like the `autorun` function but gives you more control on which observables to track. Here, the data function is tracked and returns data that is used in side effect function. 
+Whereas, an `autorun` function reacts to everything used in its function, the `reaction` function reacts to 
+
+Here is a simple use case:
+
+```javascript
+const todos = observable([
+  {
+    title: "Read Auth0 Blog",
+    done: true,
+  },
+  {
+    title: "Write MobX article",
+    done: false
+  }
+]); 
+
+const reactionSample = reaction(
+    () => todos.map(todo => todo.title),
+    titles => console.log("Reaction: ", titles.join(", "))
+);
+```
+
+This reaction function reacts to changes of the length and title.
+
+Another reaction function available for React developers is the `observer` function. This is not provided by the main `mobx` package, but instead, provided by the `mobx-react` package. You can use it on a component by just adding the `@observer` decorator in front of it like so:
+
+```javascript
+@observer class ClassName {
+  // [...]
+}
+```
+
+With this reaction function,  if an object tagged with the `@observable` decorator is used in the `render` method of the component and that property changes, the component is automatically re-rendered. The `observer` function uses the `autorun` function internally.
+
+### Actions on MobX
+
+Actions are anything that modify the state. You can mark your actions using the `@action` decorator. It is advised to use the `@action` on any function that modifies observables or has side effects. A simple example is this:
+
+```javascript
+@observable variable = 0;
+
+@action setVariable(newVariable){
+  this.variable = newVariable;
+}
+
+```
+
 ## MobX and React in Practice
 
-In this post, you will build a user review dashboard. In the review dashboard, a user will be able write a review using an input field, select a rating from a dropdown and finally submit the review.
+In this post, you will build a simple user review dashboard. In the review dashboard, a user will enter a review using an input field, select a rating from a dropdown and finally submit the review. The dashboard will show the total number of reviews, the average star rating, and a list of all the reviews. In this sample, MobX will be used to manage certain operations like updating the reviews in realtime on the dashboard, calculating the total number of reviews submitted and lastly, obtaining the average star rating. Once you are done, your app will look similar to this:
 
-MobX will be used to manage the state of user’s interaction with the app, which includes, updating the list of reviews in the table, calculating the total number of reviews submitted so far using computed values and lastly, obtaining the average star rating. Once you are done, your app will look similar to this:
-
-//GIF of sample app...
-
-![](https://d2mxuefqeaa7sj.cloudfront.net/s_20098FF724D8DF0D82B6429613BAA946F22384BC458AC38EB172B810BC30B69A_1535702859498_board.png)
-
+//Image of app missing
 
 ### Creating a new React app
 
