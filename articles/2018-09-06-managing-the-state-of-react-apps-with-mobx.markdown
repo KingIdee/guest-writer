@@ -26,7 +26,7 @@ Before understanding the concept of state management, you have to understand wha
 State management therefore means monitoring and managing the data(state) of your app. Almost all apps have states in one way or the other and so, managing states has become one of the most important part of building any modern app today. Basically, there are three alternatives towards managing states in React. They include: Redux, React Context API and MobX. 
 
 ### Redux 
-[Redux](https://redux.js.org/) is the most popular state management solution for React apps. Redux strictly abides to the 'single source of truth' principle. With this, the state is kept in one location (the store) and made a read-only entity. Redux revolves around three concepts: the store, the reducer, and actions. The store holds the state, the action represents the intent to change the state, and the reducer specify how the application's state changes in response to actions. The only way to change the state is first, to emit an action. The reducer listens to a set of actions and returns a new state based on action performed. 
+[Redux](https://redux.js.org/) is the most popular state management solution for React apps. Redux strictly abides to the 'single source of truth' principle. With this, the state is kept in one location (the store) and made a read-only entity. Redux revolves around three concepts: the store, the reducer, and actions. The store holds the state, the action represents the intent to change the state, and the reducer specify how the application's state changes in response to actions. To alter the state of your application, the reducer listens to actions emitted and returns a new state based on action performed. 
 
 The reducer does not mutate the current state. It copies the current state, modifies it based on actions emitted and returns a new state. This way, your state is not mutated in an irregular manner. The reducer is seen as the most important of the three concepts. You can check this [practical tutorial on Redux](https://auth0.com/blog/redux-practical-tutorial/) for further in-depth explanations on how Redux works.
 
@@ -37,7 +37,7 @@ In the next section, you will learn about the third alternative at your disposal
 
 ## MobX Introduction
 
-[MobX](https://mobx.js.org/) is another state management library available for React apps. It uses a more reactive process and it is slowly gaining popularity in the community. MobX is not just a library for React apps alone, it is also suitable for use with other javaScript libraries and frameworks that power the frontend of web apps. MobX is sponsored by reputable companies such as [Algolia](https://www.algolia.com/), [Coinbase](https://www.coinbase.com), etc. MobX hit 16,719 stars on [GitHub](https://github.com/mobxjs/mobx) at the time of writing. That obviously tells you it is becoming a solid choice for state management in React applications. To get up to speed, you can visit its official [documentation](https://mobx.js.org/). In the next section, you will learn more about MobX.
+[MobX](https://mobx.js.org/) is another state management library available for React apps. It uses a more reactive process and it is slowly gaining popularity in the community. MobX is not just a library for React alone, it is also suitable for use with other javaScript libraries and frameworks that power the frontend of web apps. MobX is sponsored by reputable companies such as [Algolia](https://www.algolia.com/), [Coinbase](https://www.coinbase.com), etc. MobX hit 16,719 stars on [GitHub](https://github.com/mobxjs/mobx) at the time of writing. That obviously tells you it is becoming a solid choice for state management in React applications. To get up to speed, you can visit its official [documentation](https://mobx.js.org/). In the next section, you will learn more about MobX.
 
 ### Observable State on MobX
 
@@ -47,14 +47,14 @@ Observable state is one of the main concepts of MobX. The idea behind this conce
 @observable counter = 0
 ```
 
-An alternative way of doing this is like this:
+Or, you can declare it like so:
 
 ```javascript
 decorate(ClassName, {
   counter: observable
 })
 ```
-Where `ClassName` is the name of the class where the `counter` object is. This decorator can be used on instance fields and property getters. 
+Where `ClassName` is the name of the class where the `counter` object resides. This decorator can be used on instance fields and property getters. 
 
 ### Computed Values on MobX
 
@@ -76,7 +76,7 @@ In this snippet, if the value of `test` changes, the `computedTest` method is eq
 
 Reactions are very much similar to computed values. The difference here is that instead of computing and returning a value, a reaction simply triggers a side effect, more like it performs a side operation. Reactions occur as a result of changes on observables. Reactions  could affect the UI or they could be background actions. Mobx provides 3 main types of reaction functions `when`, `autorun` and `reaction`. Let us look at what these functions do:
 
-`when` : accepts two functions as parameters, the predicate and effect. It runs and observes the first function (the predicate) until it returns true, and then runs the effect function. After this, it disposes, and stops reacting observed property. Here is an example of how this function works:
+`when` : accepts two functions as parameters, the predicate and effect. It runs and observes the first function (the predicate) until it returns true, and then runs the effect function. After this, the function is disposed. Here is an example of how this function works:
 
 ```javascript
 when(
@@ -87,7 +87,7 @@ when(
 );
 ```
 
-The `isEnabled` function could be marked with `@computed` so that the value is automatically computed.
+Once the `isEnabled` function returns true, it executes the `exit` function. The `isEnabled` function must be a function that reacts i.e it would be marked with `@computed` so that the value is automatically computed or better still, marked with an `@observable` decorator.
 
 The next reaction function is the `autorun` function. Unlike the `when` function, this function takes in one function and keeps running it until it is manually disposed. Here is how an `autorun` function can be used:
 
@@ -104,8 +104,7 @@ With this in place, anytime the variable `age` changes, the `autorun` function s
 dispose();
 ```
 
-The `reaction` function mandatorily accepts two functions, (the data function and side effect function) and an optional third argument. It is like the `autorun` function but gives you more control on which observables to track. Here, the data function is tracked and returns data to be used in side effect function. 
-Whereas, an `autorun` function reacts to everything used in its function, the `reaction` function reacts to 
+The `reaction` function mandatorily accepts two functions, (the data function and side effect function) and an optional third argument. It is like the `autorun` function but gives you more control on which observables to track. Here, the data function is tracked and returns data to be used in side effect function. Whereas, an `autorun` function reacts to everything used in its function, the `reaction` function reacts to observables you specify.
 
 Here is a simple use case:
 
@@ -127,7 +126,7 @@ const reactionSample = reaction(
 );
 ```
 
-This reaction function reacts to changes of the length and title of the list.
+This `reaction` function reacts to changes of the length and title of the list.
 
 Another reaction function available for React developers is the `observer` function. This is not provided by the main `mobx` package, but instead, provided by the `mobx-react` package. You can use it on a component by just adding the `@observer` decorator in front of it like so:
 
@@ -137,7 +136,7 @@ Another reaction function available for React developers is the `observer` funct
 }
 ```
 
-With this reaction function,  if an object tagged with the `@observable` decorator is used in the `render` method of the component and that property changes, the component is automatically re-rendered. The `observer` function uses the `autorun` function internally.
+With this `reaction` function, if an object tagged with the `@observable` decorator is used in the `render` method of the component and that property changes, the component is automatically re-rendered. The `observer` function uses the `autorun` function internally.
 
 ### Actions on MobX
 
@@ -155,13 +154,13 @@ This function is updating the value of an observable and so it is marked with  -
 
 ## MobX and React in Practice
 
-In this post, you will build a simple user review dashboard. In the review dashboard, a user will enter a review using an input field, select a rating from a dropdown and finally submit the review. The dashboard will show the total number of reviews, the average star rating, and a list of all the reviews. In this sample, MobX will be used to manage certain operations like updating the reviews in realtime on the dashboard, calculating the total number of reviews submitted and lastly, obtaining the average star rating. Once you are done, your app will look similar to this:
+Haven gone through the main concepts in MobX, you will now put it into practise. In this section, you will build a simple user review dashboard. In the review dashboard, a user will enter a review using an input field, select a rating from a dropdown and finally submit the review. The dashboard will show the total number of reviews, the average star rating, and a list of all the reviews. MobX will be used to manage certain operations like updating the reviews in realtime on the dashboard, calculating the total number of reviews submitted and lastly, obtaining the average star rating. Once you are done, your app will look similar to this:
 
 ![](https://d2mxuefqeaa7sj.cloudfront.net/s_1F4CEC0181EE662CDA49B1B63F312B2B97326A5FCDC330DCAC9E024ED6AFCC10_1536899361393_Screenshot+2018-09-14+at+5.28.15+AM.png)
 
 ### Creating a new React app
 
-You need the `create-react-app` CLI tool to quickly bootstrap your React app without the hassle of build configurations. You can install it by running:
+You need the `create-react-app` CLI tool to quickly bootstrap your React app without the hassle of build configurations. If you don't have it already, you can install it by running:
 
 ```bash
 npm install -g create-react-app
@@ -175,7 +174,7 @@ npx create-react-app react-mobx-tutorial
 
 ### Installing Dependencies
 
-After creating your app, the next obvious step is to install the required dependencies. You need two dependencies, the `mobx-react` dependency to add MobX to your app and the `react-star-rating-component` dependency to easily implement a rating bar in the app. You can install them like so:
+After creating your app, the next obvious step is to install the required dependencies. You need three dependencies, the main `mobx` dependency to add MobX to your app, the `mobx-react` dependency to add React specific functions available through MobX and the `react-star-rating-component` dependency to easily implement a rating bar in the app. You can install them like so:
 
 ```bash
 # move into app directory
@@ -229,11 +228,11 @@ decorate(Store, {
 });
 ```
 
-From this snippet, the decorators are imported from the mobx package and assigned to the various methods to be exposed. Each object is assigned a decorator based on how it will perform and react.
+From this snippet, the decorators earlier discussed are assigned to the various methods to be exposed. Each object is assigned a decorator based on how it will perform and react.
 
 ### Updating the Store on MobX
 
-Next, you will create a new component - the form component that will collect the user's review response and update the contents already specified in the MobX store. For proper organisation, create a folder just for your components. Create a new folder named `components` within the `src` folder. After this, go ahead to create a new file called `Form.js` and paste this:
+Next, you will create a new component - the form component that will collect the user's review response and update the contents already specified in the MobX store. For proper organisation, create a folder just for your components. Create a new folder named `components` within the `src` folder. After this, go ahead to create a new file called `Form.js` and paste this in the file:
 
 ```javascript
 import React, {Component} from 'react';
@@ -299,7 +298,6 @@ Once the form has been submitted and the store has the updated contents, you nee
 ```javascript
 import React, {Component} from 'react';
 import {observer} from 'mobx-react'
-
 
 class Dashboard extends Component {
   render() {
@@ -402,10 +400,9 @@ export default Reviews;
 
 In the snippet above, the `StarRatingComponent` installed earlier is used to display the number of stars selected by the user during review. Also, a `List` component is created here. This component is what will be rendered as each list item when you iterate over the total list of submitted reviews. The `Reviews` is also wrapped with an `observer()` function to make the component recieve and display changes in the MobX store as they come.
 
-
 ### Wrapping Up your MobX App
 
-To wrap up, you will modify your `App.css` file. Open the file and replace the contents like so:
+To wrap up, you will modify some files, starting with your `App.css` file. Open the file and replace the contents like so:
 
 ```css
 .formSection {
@@ -426,9 +423,7 @@ To wrap up, you will modify your `App.css` file. Open the file and replace the c
 }
 ```
 
-Here, you declared classes with properties 
-
-Next, you will finialise your `App.js` file. Open your `App.js` file and add this to what you had already:
+Next, you will modify your `App.js` file. Open your `App.js` file and add this to what you had already:
 
 ```javascript
 import React, {Component} from 'react';
@@ -471,7 +466,7 @@ Secondly, change the text within the `<title>` tag like so:
 <title> React and MobX </title>
 ```
 
-Finally, wrap the `div` element with `id` - `root` with another `div` element like so:
+And finally, wrap the `div` element with `id` - `root` with another `div` element like so:
 
 ```html
 <div class="container">
