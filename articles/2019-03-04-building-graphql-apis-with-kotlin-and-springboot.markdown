@@ -7,7 +7,7 @@ author:
   name: "Idorenyin Obong"
   url: "https://twitter.com/kingidee/"
   mail: "idee4ril@gmail.com"
-  avatar: "https://twitter.com/kingidee/profile_image?size=original"
+  avatar: "https://cdn.auth0.com/blog/guest-authors/idee.png"
 related:
 - 2017-11-15-an-example-of-all-possible-elements
 ---
@@ -17,20 +17,21 @@ related:
 ## Prerequisites
 Before proceeding, there are some tools you need to ensure you have on your machine in order to follow the article seamlessly. They include:
 
-**JDK** 
+### JDK 
 This is the Java Platform, Standard Edition Development Kit. Normally, this environment is used for developing Java applications, but since Kotlin runs on the JVM just like Java, you need it. You can download it [here](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html).
 
-**Intellij IDEA**
+### Intellij IDEA
+
 This is an IDE ( Integrated Development Environment) built by [JetBrains](https://www.jetbrains.com) and used for developing Java and Kotlin applications. It is a paid software, but you can make use of the free community edition. You can download the IDE [right here](https://www.jetbrains.com/idea/download).
 
 
 ## Introduction
 By now, you may be slightly anxious about the technologies you will use in this article. In this part, you will get a brief overview of the stacks you will use for the article.
 
-**Kotlin**
+### Kotlin
 According to the official [docs](http://kotlinlang.org/docs/reference/faq.html#what-is-kotlin):
 
-> 💡 Kotlin is an OSS statically typed programming language that targets the JVM, Android, JavaScript and Native.
+> Kotlin is an OSS statically typed programming language that targets the JVM, Android, JavaScript and Native.
 
 Breaking this down into pieces, you can say:
 
@@ -52,7 +53,7 @@ Kotlin is becoming increasingly popular especially in the Android development co
 
 Many other large companies have adopted Kotlin. Some include: [Square](https://medium.com/square-corner-blog/square-open-source-loves-kotlin-c57c21710a17), [Pinterest](https://www.youtube.com/watch?v=mDpnc45WwlI), etc.
 
-**Spring Boot**
+### Spring Boot
 Spring Boot is a framework built on top of the earlier existed Spring framework. Spring is primarily used to build Java-based enterprise applications. Here are some cool features you enjoy when you use Spring Boot:
 
 
@@ -63,7 +64,7 @@ Spring Boot is a framework built on top of the earlier existed Spring framework.
 
 In case you want to read further on how Spring differs from Spring Boot, you can use this [resource](https://paper.dropbox.com/doc/Building-GraphQL-APIs-with-Kotlin-and-Spring-Boot--AYWi~oyOgcyrPs4VadJSREzPAg-AefcRzEmuLmy29OcMVeN5#configure-embed).
 
-**GraphQL**
+### GraphQL
 GraphQL is a query language for APIs. It was developed by Facebook in 2012 and used internally
 at first but was later open-sourced in 2015. It is seen by some as a replacement for REST because of some the awesome qualities it poses. Here are a few points you should note about GraphQL:
 
@@ -74,13 +75,14 @@ at first but was later open-sourced in 2015. It is seen by some as a replacement
 
 You will get to see the use of the above listed features when you dive deeper in the article. GraphQL has attracted top patronizers such as GitHub, Twitter, Pintrest, Shopify etc. If GraphQL is pretty much new to you, you can use [this resource](https://graphql.org/learn/) to get up to speed with it.
 
-**MongoDB**
+### MongoDB
 MongoDB is a non-relational database management system. MongoDB is document-oriented and stores data in a [Binary JSON (BSON)](http://bsonspec.org/) manner.  One of the advantages of this db solution is that it does not have a predefined schema, hence, it is easy to scale overtime.
 
 You can confirm if you have Mongo installed on your machine by running this:
 
-
+```
 mongo -version
+```
 
 If you don’t have, you can follow [this manual](https://docs.mongodb.com/manual/installation/) to install it.
 
@@ -103,14 +105,14 @@ Next, you have to add some more dependencies. Open your `build.gradle` file and 
 ```gradle
 // /kotlingraphql/build.gradle
 dependencies {
-// other dependencies
-implementation 'com.graphql-java:graphql-spring-boot-starter:5.0.2'
-implementation 'com.graphql-java:graphiql-spring-boot-starter:5.0.2'
-implementation 'com.graphql-java:graphql-java-tools:5.2.4'
+    // other dependencies
+    implementation 'com.graphql-java:graphql-spring-boot-starter:5.0.2'
+    implementation 'com.graphql-java:graphiql-spring-boot-starter:5.0.2'
+    implementation 'com.graphql-java:graphql-java-tools:5.2.4'
 }
 ```
 
-These dependencies will add GraphQL functionalities to your app. After adding them, import changes so that gradle will download these dependencies to your project.
+These dependencies will give GraphQL functionalities to your app. After adding them, import changes so that gradle will download these dependencies to your project.
 
 After that, open the `application.properties` file located in the `kotlingraphql/src/main/resources/` directory and add this:
 
@@ -136,14 +138,14 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection="snack")
 data class Snack (
-var name: String,
-var amount: Float
+    var name: String,
+    var amount: Float
 ){
-@Id
-var id: String = ""
+    @Id
+    var id: String = ""
 
-@Transient
-var reviews:List<Review> = ArrayList()
+    @Transient
+    var reviews:List<Review> = ArrayList()
 
 }
 ```
@@ -165,9 +167,9 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "reviews")
 data class Review(
-var snackId: String,
-var rating: Int,
-var text: String
+    var snackId: String,
+    var rating: Int,
+    var text: String
 )
 ```
 
@@ -231,20 +233,20 @@ Create a new file named `snack.graphqls` in the `kotlingraphql/src/main/resource
 
 ```
 type Query {
-snacks: [Snack]
+    snacks: [Snack]
 }
 
 type Snack {
-id: ID!
-name: String
-amount: Float
-reviews: [Review]
+    id: ID!
+    name: String
+    amount: Float
+    reviews: [Review]
 }
 
 type Mutation {
-newSnack(name: String!, amount: Float!) : Snack!
-deleteSnack(id: ID!) : Boolean
-updateSnack(id:ID!, amount: Float!) : Snack!
+    newSnack(name: String!, amount: Float!) : Snack!
+    deleteSnack(id: ID!) : Boolean
+    updateSnack(id:ID!, amount: Float!) : Snack!
 }
 ```
 
@@ -261,17 +263,17 @@ Still in the `kotlingraphql/src/main/resources` directory, create another file n
 
 ```
 extend type Query {
-reviews(snackId: ID!): [Review]
+    reviews(snackId: ID!): [Review]
 }
 
 type Review {
-snackId: ID!
-rating: Int
-text: String!
+    snackId: ID!
+    rating: Int
+    text: String!
 }
 
 extend type Mutation {
-newReview(snackId: ID!, rating: Int, text:String!) : Review!
+    newReview(snackId: ID!, rating: Int, text:String!) : Review!
 }
 ```
 
@@ -296,22 +298,21 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
 
 @Component
-class SnackQueryResolver (val snackRepository: SnackRepository,
-private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
+class SnackQueryResolver (val snackRepository: SnackRepository,private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
 
-fun snacks(): List<Snack>{
-val list = snackRepository.findAll()
-for(item in list){
-item.reviews = getReviews(snackId = item.id)
-}
-return list
-}
+    fun snacks(): List<Snack>{
+        val list = snackRepository.findAll()
+        for(item in list){
+            item.reviews = getReviews(snackId = item.id)
+        }
+        return list
+    }
 
-private fun getReviews(snackId:String) : List<Review> {
-val query = Query()
-query.addCriteria(Criteria.where("snackId").`is`(snackId))
-return mongoOperations.find(query, Review::class.java)
-}
+    private fun getReviews(snackId:String) : List<Review> {
+        val query = Query()
+        query.addCriteria(Criteria.where("snackId").`is`(snackId))
+        return mongoOperations.find(query, Review::class.java)
+    }
 
 }
 ```
@@ -320,10 +321,11 @@ This class is specifically created for queries in the `snack.graphqls` file, hen
 
 Remember that the query type in the  `snack.graphqls` looks like this:
 
-
+```
 type Query {
-snacks: [Snack]
+    snacks: [Snack]
 }
+```
 
 And so, the `SnackQueryResolver` class contains one public function named `snacks` which should return a list of snacks. Notice that the field name corresponds to the function name. This is how it should be else, the function won’t be recognised as a resolver for any field.
 
@@ -343,26 +345,26 @@ import java.util.*
 @Component
 class SnackMutationResolver (private val snackRepository: SnackRepository): GraphQLMutationResolver {
 
-fun newSnack(name: String, amount: Float): Snack {
-val snack = Snack(name, amount)
-snack.id = UUID.randomUUID().toString()
-snackRepository.save(snack)
-return snack
-}
+    fun newSnack(name: String, amount: Float): Snack {
+        val snack = Snack(name, amount)
+        snack.id = UUID.randomUUID().toString()
+        snackRepository.save(snack)
+        return snack
+    }
 
-fun deleteSnack(id:String): Boolean {
-snackRepository.deleteById(id)
-return true
-}
+    fun deleteSnack(id:String): Boolean {
+        snackRepository.deleteById(id)
+        return true
+    }
 
-fun updateSnack(id:String, amount:Float): Snack {
-val snack = snackRepository.findById(id)
-snack.ifPresent {
-it.amount = amount
-snackRepository.save(it)
-}
-return snack.get()
-}
+    fun updateSnack(id:String, amount:Float): Snack {
+        val snack = snackRepository.findById(id)
+        snack.ifPresent {
+            it.amount = amount
+            snackRepository.save(it)
+        }
+        return snack.get()
+    }
 
 }
 ```
@@ -389,11 +391,11 @@ import org.springframework.stereotype.Component
 @Component
 class ReviewQueryResolver (val mongoOperations: MongoOperations): GraphQLQueryResolver {
 
-fun reviews(snackId:String) : List<Review> {
-val query = Query()
-query.addCriteria(Criteria.where("snackId").`is`(snackId))
-return mongoOperations.find(query, Review::class.java)
-}
+    fun reviews(snackId:String) : List<Review> {
+        val query = Query()
+        query.addCriteria(Criteria.where("snackId").`is`(snackId))
+        return mongoOperations.find(query, Review::class.java)
+    }
 
 }
 ```
@@ -413,11 +415,11 @@ import org.springframework.stereotype.Component
 @Component
 class ReviewMutationResolver (private val reviewRepository: ReviewRepository): GraphQLMutationResolver {
 
-fun newReview(snackId: String, rating: Int, text:String): Review {
-val review = Review(snackId, rating, text)
-reviewRepository.save(review)
-return review
-}
+    fun newReview(snackId: String, rating: Int, text:String): Review {
+        val review = Review(snackId, rating, text)
+        reviewRepository.save(review)
+        return review
+    }
 
 }
 ```
@@ -452,28 +454,28 @@ Then add these methods below the `main` method in the class:
 
 @Bean
 fun snackQuery(snackRepository: SnackRepository,mongoOperations: MongoOperations): SnackQueryResolver {
-return SnackQueryResolver(snackRepository,mongoOperations)
+    return SnackQueryResolver(snackRepository,mongoOperations)
 }
 
 @Bean
 fun reviewQuery(mongoOperations: MongoOperations): ReviewQueryResolver {
-return ReviewQueryResolver(mongoOperations)
+    return ReviewQueryResolver(mongoOperations)
 }
 
 @Bean
 fun snackMutation(snackRepository: SnackRepository): SnackMutationResolver {
-return SnackMutationResolver(snackRepository)
+    return SnackMutationResolver(snackRepository)
 }
 
 @Bean
 fun reviewMutation(reviewRepository: ReviewRepository): ReviewMutationResolver {
-return ReviewMutationResolver(reviewRepository)
+    return ReviewMutationResolver(reviewRepository)
 }
 ```
 
 From the snippet above, you have declared the resolvers as Spring beans. A bean is an object that is instantiated, assembled, and managed by a Spring IoC container. Now, you can run your app using the green run icon at the toolbar of the IDE. You can also run using this command on the root directory:
 
-```
+```bash
 For Mac
 ./gradlew bootRun
 
@@ -497,11 +499,11 @@ To add a snack, clear all the comments on the left hand side and add this snippe
 
 ```
 mutation {
- newSnack(
-  name: "French Fries",
-  amount: 40.5) {
-  id name amount
- }
+    newSnack(
+    name: "French Fries",
+    amount: 40.5) {
+        id name amount
+    }
 }
 ```
 
@@ -516,11 +518,11 @@ You just created a new snack! Now you will create a review for this snack. To do
 
 ```
 mutation {
- newReview(snackId:"SNACK_ID",
-  text: "Awesome snack!", rating:5 
-  ){
-  snackId, text, rating
- }
+    newReview(snackId:"SNACK_ID",
+    text: "Awesome snack!", rating:5 
+    ){
+        snackId, text, rating
+    }
 }
 ```
 
@@ -532,13 +534,13 @@ When you run that query, you should have this response:
 
 ```json
 {
- "data": {
-  "newReview": {
-  "snackId": "c72aaba6-7cbe-4af0-8f5a-783eb803f088",
-  "text": "Awesome snack!",
-  "rating": 5
-  }
- }
+    "data": {
+        "newReview": {
+            "snackId": "c72aaba6-7cbe-4af0-8f5a-783eb803f088",
+            "text": "Awesome snack!",
+            "rating": 5
+            }
+    }
 }
 ```
 
@@ -602,20 +604,20 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableResourceServer
 class SecurityConfig : ResourceServerConfigurerAdapter() {
 
-@Value("\${security.oauth2.resource.id}")
-private lateinit var resourceId: String
+    @Value("\${security.oauth2.resource.id}")
+    private lateinit var resourceId: String
 
-@Throws(Exception::class)
-override fun configure(http: HttpSecurity) {
-http.authorizeRequests()
-.mvcMatchers("/graphql").authenticated()
-.anyRequest().permitAll()
-}
+    @Throws(Exception::class)
+    override fun configure(http: HttpSecurity) {
+        http.authorizeRequests()
+            .mvcMatchers("/graphql").authenticated()
+            .anyRequest().permitAll()
+    }
 
-@Throws(Exception::class)
-override fun configure(resources: ResourceServerSecurityConfigurer) {
-resources.resourceId(resourceId)
-}
+    @Throws(Exception::class)
+    override fun configure(resources: ResourceServerSecurityConfigurer) {
+        resources.resourceId(resourceId)
+    }
 }
 ```
 
