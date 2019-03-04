@@ -80,7 +80,7 @@ MongoDB is a non-relational database management system. MongoDB is document-orie
 
 You can confirm if you have Mongo installed on your machine by running this:
 
-```
+```bash
 mongo -version
 ```
 
@@ -150,6 +150,7 @@ data class Snack (
 }
 ```
 
+
 > Data classes in Kotlin derive getters, setters, and other utility functions for you by default!
 
 This class is a model of a single snack that will be stored and retrieved. Each snack has `name`, `amount`, `id` (a unique identifier), `reviews`. The `reviews` variable will hold all the reviews peculiar to a particular snack.
@@ -160,7 +161,7 @@ The `id` is annotated with `@Id` to tell MongoDB that the variable will hold the
 
 Next, create another class called `Review` still under the `entity` package and add this snippet: 
 
-```
+```kotlin
 // ./src/main/kotlin/com/auth0/kotlingraphql/entity/Review.kt
 
 import org.springframework.data.mongodb.core.mapping.Document
@@ -298,7 +299,8 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
 
 @Component
-class SnackQueryResolver (val snackRepository: SnackRepository,private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
+class SnackQueryResolver (val snackRepository: SnackRepository,
+                          private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
 
     fun snacks(): List<Snack>{
         val list = snackRepository.findAll()
@@ -449,7 +451,7 @@ import org.springframework.data.mongodb.core.MongoOperations
 
 Then add these methods below the `main` method in the class:
 
-```
+```kotlin
 // .src/main/kotlin/com/auth0/kotlingraphql/KotlingraphqlApplication.kt
 
 @Bean
@@ -564,13 +566,13 @@ Set the friendly name of the API to **Kotlin GraphQL API** and the identifier to
 
 Next, open your `build.gradle` file and add the Spring OAuth2 dependency like this:
 
-```
+```gradle
 implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.6.RELEASE'
 ```
 
 If you are running JDK 8, your app will run smoothly, otherwise, you might encounter an [OAuth2 spring error creating a bean with name 'springSecurityFilterChain'](https://stackoverflow.com/questions/47866963/oauth2-spring-error-creating-bean-with-name-springsecurityfilterchain). You can fix it by adding these dependencies:
 
-```
+```gradle
 implementation 'javax.xml.bind:jaxb-api:2.3.0'
 implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
 implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
