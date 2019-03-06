@@ -660,5 +660,5 @@ Now, if you execute your query, you would get a response:
 ![](https://d2mxuefqeaa7sj.cloudfront.net/s_76143C7D23A4EC4FF528BCDF839EB5A4B87C99992ADE34CF23D3BB3AB4442886_1551368866615_Screenshot+2019-02-28+at+4.46.44+PM.png)
 
 ## Conclusion
-In this article, you have learned how to build GraphQL APIs using a trending language - Kotlin, a solid framework - Spring Boot and a popular database solution - MongoDB. Feel free to explore the GitHub repository and play around it.
+In this article, you have learned about some modern technologies: Kotlin, Spring Boot, GraphQL and MongoDB. You now have a solid foundation on how they work and you can easily explain to your friends now. You built a GraphQL API, something that is largely craved for in the community today. Feel free to explore beyond this. You can still visit the GitHub repository and play around it.
 
