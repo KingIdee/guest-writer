@@ -12,7 +12,7 @@ related:
 - 2017-11-15-an-example-of-all-possible-elements
 ---
 
-**TL;DR:** In this article, you will learn how to build GraphQL APIs with Kotlin and Spring Boot. The API will make use of MongoDB for database operations and of course, it will be secured by Auth0. You can find the final code developed in this part in this GitHub repository.
+**TL;DR:** In this article, you will learn how to build GraphQL APIs with Kotlin, Spring Boot and MongoDB. And of course, the API will be secured by Auth0. You can find the final code developed in this part in this GitHub repository.
 
 ## Prerequisites
 Before proceeding, there are some tools you need to ensure you have on your machine in order to follow the article seamlessly. They include:
@@ -22,7 +22,7 @@ This is the Java Platform, Standard Edition Development Kit. Normally, this envi
 
 ### Intellij IDEA
 
-This is an IDE ( Integrated Development Environment) built by [JetBrains](https://www.jetbrains.com) and used for developing Java and Kotlin applications. It is a paid software, but you can make use of the free community edition. You can download the IDE [right here](https://www.jetbrains.com/idea/download).
+This is an IDE ( Integrated Development Environment) built by [JetBrains](https://www.jetbrains.com) and used for developing Java and Kotlin applications. It is a paid software, but you can make use of the free community edition. You can download the IDE [right here](https://www.jetbrains.com/idea/download). At the time of writing this article, the most recent and recommended version is `2018.3.5`. 
 
 
 ## Introduction
@@ -78,13 +78,13 @@ You will get to see the use of the above listed features when you dive deeper in
 ### MongoDB
 MongoDB is a non-relational database management system. MongoDB is document-oriented and stores data in a [Binary JSON (BSON)](http://bsonspec.org/) manner.  One of the advantages of this db solution is that it does not have a predefined schema, hence, it is easy to scale overtime.
 
-You can confirm if you have Mongo installed on your machine by running this:
+You can confirm if you have Mongo installed on your machine by running:
 
 ```bash
 mongo -version
 ```
 
-If you don’t have, you can follow [this manual](https://docs.mongodb.com/manual/installation/) to install it.
+If you don’t have it, you can follow [this manual](https://docs.mongodb.com/manual/installation/) to install it.
 
 
 ## What you will build
@@ -94,11 +94,15 @@ In this article, you will build a GraphQL API that performs typical CRUD operati
 ## Bootstrapping your app
 As mentioned earlier, Spring Boot has an initializer that helps you bootstrap your applications faster. Open the [initializer](https://start.spring.io/) and fill in the options as seen in the image below:
 
-![](https://d2mxuefqeaa7sj.cloudfront.net/s_76143C7D23A4EC4FF528BCDF839EB5A4B87C99992ADE34CF23D3BB3AB4442886_1551308262819_Screenshot+2019-02-27+at+11.57.19+PM.png)
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_76143C7D23A4EC4FF528BCDF839EB5A4B87C99992ADE34CF23D3BB3AB4442886_1552033270779_Screenshot+2019-03-08+at+7.45.10+AM.png)
 
-Here, you are generating a  gradle project with Kotlin and Spring Boot `2.1.3`. The package-name for the app is `com.auth0.kotlingraphql`. You will need to search for the `Web` and `MongoDB` dependency and add them as done above.  
+Here, you are generating a  gradle project with Kotlin and Spring Boot `2.1.3`. The group name for the app is `com.auth0` while the artifact name is `kotlingraphql` . You will need to search for the `Web` and `MongoDB` dependency and add them as done above.  
 
-The web dependency is a starter dependency for building web applications while the MongoDB dependency is for your database solution. After that, click the *Generate Project* button. This will download a zipped file that contains your project. Extract the project, and open it in IntelliJ IDEA.
+The web dependency is a starter dependency for building web applications while the MongoDB dependency is dependency to aid your databse operations. After that, click the *Generate Project* button. This will download a zipped file that contains your project. Extract the project, and open it in IntelliJ IDEA.
+
+In your IDE, you should also make sure the Kotlin plugin is installed:
+
+![](https://d2mxuefqeaa7sj.cloudfront.net/s_76143C7D23A4EC4FF528BCDF839EB5A4B87C99992ADE34CF23D3BB3AB4442886_1552039184074_Screenshot+2019-03-08+at+10.58.42+AM.png)
 
 Next, you have to add some more dependencies. Open your `build.gradle` file and add these:
 
@@ -112,9 +116,9 @@ dependencies {
 }
 ```
 
-These dependencies will give GraphQL functionalities to your app. After adding them, import changes so that gradle will download these dependencies to your project.
+These dependencies will add GraphQL functionalities to your app. After adding them, import changes so that gradle will download these dependencies to your project.
 
-After that, open the `application.properties` file located in the `kotlingraphql/src/main/resources/` directory and add this:
+After that, open the `application.properties` file located in the `kotlingraphql/src/main/resources/` directory and add these properties:
 
 ```
 server.port=9000
@@ -196,7 +200,7 @@ import org.springframework.stereotype.Repository
 interface SnackRepository : MongoRepository<Snack, String>
 ```
 
-The interface you have just created implements the `MongoRepository` interface which provides some predefined methods that you need.  Some of these methods include: `findAll`, `saveAll`, `findById` among many others.
+The interface you have just created extends the `MongoRepository` interface which provides some predefined methods that you need.  Some of these methods include: `findAll`, `saveAll`, `findById` among many others.
 
 The `MongoRepository` interface takes in two parameters types, `Snack` and `String`. The first parameter (`Snack`) is the data type that will be saved and retrieved from this repository while the second parameter (`String`) is the data type of the `ID`.  `String` is used since the data type for the `id` variable in the `Snack` entity is a `String`.
 
@@ -570,17 +574,6 @@ Next, open your `build.gradle` file and add the Spring OAuth2 dependency like th
 implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.6.RELEASE'
 ```
 
-If you are running JDK 8, your app will run smoothly, otherwise, you might encounter an [OAuth2 spring error creating a bean with name 'springSecurityFilterChain'](https://stackoverflow.com/questions/47866963/oauth2-spring-error-creating-bean-with-name-springsecurityfilterchain). You can fix it by adding these dependencies:
-
-```gradle
-implementation 'javax.xml.bind:jaxb-api:2.3.0'
-implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
-implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
-implementation 'javax.activation:activation:1.1.1'
-```
-
-After adding them, sync your gradle files. 
-
 Next, open the `application.properties` file in the `kotlingraphql/src/main/resources/` directory and add these two properties:
 
 ```
@@ -623,10 +616,21 @@ class SecurityConfig : ResourceServerConfigurerAdapter() {
 }
 ```
 
-This class will be auto detected by Spring thanks to the annotations. This class ensures that the `/graphql` endpoint is provided with a token before it can be accessed.
+This class will be auto detected by Spring thanks to the annotations. This class ensures that the `/graphql` endpoint is provided with a bearer token before it can be accessed.
 
 
 > Note that although you were testing the API on http://localhost:9000/graphiql, the main endpoint for the API  is http://localhost:9000/graphql.  The later only provides an interface for easy testing.
+
+If you try running your app and you are using JDK 8, your app will run smoothly, otherwise, you might encounter an [OAuth2 spring error creating a bean with name 'springSecurityFilterChain' error](https://stackoverflow.com/questions/47866963/oauth2-spring-error-creating-bean-with-name-springsecurityfilterchain). You can fix it by adding these dependencies:
+
+```gradle
+implementation 'javax.xml.bind:jaxb-api:2.3.0'
+implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
+implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
+implementation 'javax.activation:activation:1.1.1'
+```
+
+After adding them, sync your gradle files. Your app should run smoothly now irrespective of your JDK version.
 
 In the previous section, you tested the mutations. Now, you will test the queries. Open [Postman](https://www.getpostman.com/downloads/) on your machine and enter this query in the body:
 
