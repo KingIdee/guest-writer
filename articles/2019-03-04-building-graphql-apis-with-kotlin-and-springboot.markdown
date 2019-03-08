@@ -59,7 +59,7 @@ Spring Boot is a framework built on top of the earlier existed Spring framework.
 
 - Auto-configuration: Previously, if you are building Spring applications, you would have to configure a lot of things by yourself. But with Spring Boot, your application auto-configures a lot of that for you based on the dependencies you add.  
 - Lesser starter dependencies:  For your previous Spring projects, you need a couple of dependencies to get your application up and running, such as: `spring-core`, `spring-web`, `spring-webmvc`, `tomcat-embed-core`, etc. With Spring Boot instead, just one dependency - `spring-boot-starter-web` takes care of everything.
-- Spring Boot Initializer: The Spring initializer is an online tool that helps you easily create Spring Boot applications and also add dependencies to them. The initializer can be accessed here -  [https://start.spring.io/.](https://start.spring.io/) You will use this tool in the course of this article.
+- Spring Boot Initializr: The Spring initializr is an online tool that helps you easily create Spring Boot applications and also add dependencies to them. It can be accessed here -  [https://start.spring.io/.](https://start.spring.io/) You will use this tool in the course of this article.
 - Spring Boot is opinionated. This means that the framework choses a default way of doing things. This may sound like a bad thing, but opinionated frameworks seem to save time because you’ll be building in a way many other developers have done before.
 
 In case you want to read further on how Spring differs from Spring Boot, you can use this [resource](https://paper.dropbox.com/doc/Building-GraphQL-APIs-with-Kotlin-and-Spring-Boot--AYWi~oyOgcyrPs4VadJSREzPAg-AefcRzEmuLmy29OcMVeN5#configure-embed).
@@ -92,7 +92,7 @@ In this article, you will build a GraphQL API that performs typical CRUD operati
 
 
 ## Bootstrapping your app
-As mentioned earlier, Spring Boot has an initializer that helps you bootstrap your applications faster. Open the [initializer](https://start.spring.io/) and fill in the options as seen in the image below:
+As mentioned earlier, Spring Boot has an initializr that helps you bootstrap your applications faster. Open the [initializr](https://start.spring.io/) and fill in the options as seen in the image below:
 
 ![](https://d2mxuefqeaa7sj.cloudfront.net/s_76143C7D23A4EC4FF528BCDF839EB5A4B87C99992ADE34CF23D3BB3AB4442886_1552033270779_Screenshot+2019-03-08+at+7.45.10+AM.png)
 
