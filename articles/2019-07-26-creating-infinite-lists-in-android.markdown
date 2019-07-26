@@ -603,7 +603,7 @@ protected void onCreate(Bundle savedInstanceState) {
     microPostsListView.setAdapter(toDoListAdapter);
 
     PagedList.Config config = new PagedList.Config.Builder()
-        .setPageSize(15)
+        .setPageSize(20)
         .setEnablePlaceholders(false)
         .build();
 
@@ -651,6 +651,27 @@ public class DiffUtilCallback extends DiffUtil.ItemCallback<ToDoItem> {
 
 This class is used by the adapter to check the difference between two non-null items in the list. 
 
+Finally, update the `layout_height` attribute of the `LinearLayout` in `to_do_item.xml` layout file as follows:
+
+```xml
+android:layout_height="wrap_content"
+```
+
+This is so that each item of the list does not occupy the whole screen.
+
+## Testing
+
+You will test your app with a backend that serves paginated data. Clone this [repo](https://github.com/KingIdee/to-dos-api-express) and follow the instructions to set it up. The backend uses an in-memory database, so to populate it with a lot of data for testing, you can replace line 56 of the `index.js` file with this:
+
+```javascript
+for (let index = 0; index < 100; index++) {    
+    await insertToDo({ message: "Buy pizza!" + index });    
+}
+```
+
+When you run your app, you should have something like this:
+
+![Demo](demo.gif)
 
 ## Conclusion
 
