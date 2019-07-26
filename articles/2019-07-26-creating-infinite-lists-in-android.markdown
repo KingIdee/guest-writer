@@ -21,45 +21,43 @@ Since this is the third part of a series, it is recommended that you have comple
 
 ## Introduction
 
-Infinite scrolling is a scenario where data is continuously loaded as a user scrolls down a page or list. This technique gives birth to the naming of such lists as infinite lists. 
+Infinite scrolling is a scenario where data is continuously loaded as a user scrolls down a page or list. Since the size is not definite, these lists are often referred to as infinite lists. They are used when you have a large data set to present to your users.
 
-Infinite lists are usually required when you have a large data set to present to your users and you want to eliminate pagination on the client-side. They are becoming increasingly popular among apps rather than pagination. One of the reasons is that according to UX experts, scrolling is easier and more engaging than clicking a button to view more contents. As much as this looks like an almighty reason to always use it, it comes with some cons, like performance issues if not properly implemented. Also, users can easily get lost while scrolling, among others.
+Infinite lists are becoming increasingly popular among apps because scrolling is easier and more engaging for a user. As much as this looks like an almighty reason to always use it, it comes with some cons, like performance consequences if not properly implemented. Also, users can easily get lost while scrolling, among other reasons.
 
 In the article, you will learn how to implement infinite lists in your android applications. You will be building on top of the project from the second part of the series which can be found [here](https://github.com/auth0-blog/to-do-android-app-part-2).
 
 ## Paging library introduction 
 
-Prior to now, implementing infinite lists in Android required adding a scroll listener added to `RecyclerView` to monitor the scroll position and distance to the end of the list. From a response to a [StackOverflow question](https://stackoverflow.com/questions/47718270/why-do-i-need-to-use-the-new-paging-library-android-architecture-components), you can see the issues with this approach:
+Before now, implementing infinite lists in Android required adding a scroll listener added to the `RecyclerView` to monitor the scroll position and distance to the end of the list. This approach was not so effective as you can see from a response to a [StackOverflow question here](https://stackoverflow.com/questions/47718270/why-do-i-need-to-use-the-new-paging-library-android-architecture-components):
 
-“*You need to detect that the user has scrolled close enough to the end of the list to need to fetch data. You need to fetch that data. You need a* `*RecyclerView.Adapter*` *that can deal with incremental additions to that data. You need some sort of LRU-style caching rules to get rid of older data (that the user has scrolled past) to limit overall memory consumption. You need to handle the scenario where the user scrolls past your current data before additional data gets loaded. And so on.”*
+“*You need to detect that the user has scrolled close enough to the end of the list to need to fetch data. You need to fetch that data. You need a `RecyclerView.Adapter` that can deal with incremental additions to that data. You need some sort of LRU-style caching rules to get rid of older data (that the user has scrolled past) to limit overall memory consumption. You need to handle the scenario where the user scrolls past your current data before additional data gets loaded. And so on.*”
 
-This was not so effective and so the Android team at Google built the Paging library. The Paging library is majorly made up of three components:
+And so the Android team at Google built the Paging library. The Paging library is majorly made up of three components:
 
 ### PagedList
-This component loads data in chunks or loads data in pages. It makes sure that data is loaded asynchronously in the proper thread and the updates are delivered seamlessly. You can configure this component with a custom initial load size, page size, prefetch distance, etc.
+This is the component that loads data in chunks or loads data in pages. It makes sure that data is loaded asynchronously in the proper thread and the updates are delivered seamlessly. You can configure this component with custom initial load size, page size, prefetch distance, etc.
 
 ### PageListAdapter
-This is basically the base adapter you need to extend when building an adapter for your list. This component works hand in hand with the PagedList.
+This is the base adapter you need to extend when building an adapter for your list. This component works hand in hand with the PagedList.
 
 ### DataSource
-This is an interface you need to implement when using this library. It is used by the library determine how data is fetched. When implementing a DataSource, it is advisable to make use of one of the following subclasses also made available:
+This is an interface you need to implement when using this library. It is used to determine how data is fetched. When implementing a DataSource, it is advisable to make use of one of the following subclasses made available:
+
+- [PageKeyedDataSource](https://developer.android.com/reference/androidx/paging/PageKeyedDataSource.html): This is used where the keys for the previous and next page are returned. This is a popular use-case because most backends are built to deliver keys for large data sets. 
 
 
-- [PageKeyedDataSource](https://developer.android.com/reference/androidx/paging/PageKeyedDataSource.html): This is used for paged content where the keys for the previous and next page are returned. This will be a popular use-case because most backends are built to deliver keys for large data sets. 
+- [ItemKeyedDataSource](https://developer.android.com/reference/androidx/paging/ItemKeyedDataSource.html): This is used if you want to use data from item `N-1` (previous item) to load the `N` (current item).
 
 
-- [**ItemKeyedDataSource**](https://developer.android.com/reference/androidx/paging/ItemKeyedDataSource.html)**:** This is used if you want to use data from item `N-1` (previous item) to load the `N` (current item).
-
-
-- [**PositionalDataSource**](https://developer.android.com/reference/androidx/paging/PositionalDataSource.html)**:** This is used to load data within a specific position, say from item 10 to item 50. Using this class requires that you know the size of your data. Because of this, the class is usually used you are fetching from the local storage.
-
+- [PositionalDataSource](https://developer.android.com/reference/androidx/paging/PositionalDataSource.html): This is used to load data within a specific position, say from item 10 to item 50. Using this class requires that you know the size of your data. Because of this, the class is usually used you are fetching from the local storage.
 
 ## Paging library in action
 
 In this tutorial, you will build an infinite list for your Android app using the Paging library. The app will fetch data from a server in little chunks. While implementing this, you will equally learn how to handle errors and retry network requests for your infinite lists.
 
 ### Adding dependencies
-For this part, you will need two additional libraries namely; the `RecyclerView` library to manage the lists,  and the Paging library to handle infinite scrolling.
+For this part, you will need two additional libraries namely; the RecyclerView library to manage the lists, and the Paging library to handle infinite scrolling.
 
 To install these libraries, open the `./app/build.gradle` in your project, and update the `dependencies` section as follows:
 
@@ -72,15 +70,15 @@ dependencies {
 }
 ```
 
-You might already be wondering why you are switching from a `ListView` to a `RecyclerView`. Well, the `Paging` library is built to work with a `RecyclerView` instead of a `ListView`. The `RecyclerView` is generally preferred because it is an upgrade on the `ListView`. It comes with more optimisations and flexibility. 
+You might already be wondering why you are switching from a `ListView` to a `RecyclerView`. Well, the Paging library is built to work with a `RecyclerView` instead of a `ListView`. The `RecyclerView` is generally preferred because it is an upgrade on the `ListView` which comes with more optimizations.
 
-Still in the `./app/build.gradle` file, you will enable Java 8 for the project so that you can take advantage of lambda expressions. Lambda expressions are simply anonymous functions that don’t belong to any class. They are usually used when you want to create your own functional interface (an interface with only one abstract method). They can be assigned to variables and can be passed to methods as parameters. A typical lambda expression looks like this:
+Still in the `./app/build.gradle` file, enable Java 8 for the project so that you can take advantage of lambda expressions. Lambda expressions are anonymous functions that don’t belong to any class. They are used for creating functional interfaces(interfaces with only one abstract method). They can be assigned to variables and can be passed to methods as parameters. A typical lambda expression looks like this:
 
 ```
 (parameters) -> {action}
 ```
 
-So, go ahead and update the `gradle` file like so:
+So, go ahead and update the `gradle` file as follows:
 
 ```groovy
 android {
@@ -97,9 +95,9 @@ android {
 After adding these libraries to your project, you will need to click the *Sync Now* link that the IDE shows to download the libraries you have added and make them available.
 
 ### Adding a network state
-When continually making network requests to load data, a few things can go wrong, such as poor internet connection, server down-time, etc. You need to be able to monitor the status of your network requests to know the next appropriate action to take. 
+When frequently making network requests to load data, a few things can go wrong, such as poor internet connection, server downtime, etc. You need to be able to monitor the status of your network requests to know the next appropriate action to take. 
 
-In this regard, you will need to create an enum that holds the various status of a network request. First, create a new package called `network` inside `com.auth0.todo`. After that, create the enum named `Status` and add the following code to it:
+In this regard, you will create an enum that holds the status of a network request. First, create a new package called `network` inside `com.auth0.todo`. After that, create the enum named `Status` and add the following code to it:
 
 ```kotlin
 // ./app/src/main/java/com/auth0/todo/network/Status.java
@@ -110,12 +108,14 @@ enum Status {
 }
 ```
 
-From the code, the enum has three constants which also represent the status of any network request. 
+From the code, the enum has three constants which represent the status of any network request. 
 
 ### Modifying your List Adapter
-Since, you have switched from a `ListView`, you need to totally revamp your `ListAdapter` class. Open your `ListAdapter` class and replace it with this snippet:
+Since you have switched from a `ListView`, you need to revamp your `ListAdapter` class. Open your `ListAdapter` class and replace it with this snippet:
 
 ```kotlin
+// ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
+
 package com.auth0.todo.util;
 
 import android.view.LayoutInflater;
@@ -145,11 +145,11 @@ public class ToDoListAdapter extends PagedListAdapter<ToDoItem,RecyclerView.View
 }
 ```
 
-In this class, you changed the parent class from `BaseAdapter` to `PagedListAdapter`. Then, you have new class variables - `networkState` to tell the current network state, and `retryFunction` to hold the retry function. The retry function will be passed from the constructor.
+In this class, you changed the parent class from `BaseAdapter` to `PagedListAdapter`. Then, you added new class variables - `networkState` to tell the current network state, and `retryFunction` to hold the retry function. The retry function will be passed from the constructor.
 
 The `PagedListAdapter` class extends the `RecyclerView.Adapter` class and so, you have to implement some methods that typically come with it. Some of which include:  `getItemViewType`, `getItemCount`, `onCreateViewHolder`, `onBindViewHolder`. You will now add these methods to your adapter.
 
-The `getItemViewType` method is used to return view type of an item at a position. The method gives you the current position of the list and you can use that to perform any logic you wish to do. Add the method to your `ToDoListAdapter` class:
+The `getItemViewType` method is used to return view type of an item at a particular position. The method provides you with the current position of the list and you can use that to perform your logic. Add the method to your `ToDoListAdapter` class:
 
 ```kotlin
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
@@ -163,7 +163,7 @@ public int getItemViewType(int position) {
 }
 ```
 
-Here in this method, you are checking to know when to display the normal todo item or a loading item on the list. In this method, you have the `loading_item` layout file and the `hasExtraRow()` method missing. Now, create a new layout named `loading_item` and paste this: 
+Here in this method, you are checking to know when to display the normal todo item or a loading item on the list. In this method, you have the `loading_item` layout file and the `hasExtraRow()` method missing. Now, create a new layout named `loading_item` and add this: 
 
 ```xml
 <!-- ./app/src/main/res/layout/loading_item.xml -->
@@ -190,7 +190,7 @@ Here in this method, you are checking to know when to display the normal todo it
 </LinearLayout>
 ```
 
-This layout contains a progress bar that will be displayed when you are loading data from the server and a button to retry network requests. After that, add the missing `hasExtraRow()` method still in the `ToDoListAdapter` class like so:
+This layout contains a progress bar that will be displayed when you are loading data from the server and a button to retry network requests if an error occurred. After that, add the missing `hasExtraRow()` method still in the `ToDoListAdapter` class like so:
 
 ```kotlin
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
@@ -202,7 +202,7 @@ private Boolean hasExtraRow(){
 
 This method checks to know if an extra row should be shown. That is simply known if the `networkState` is not type `Status.SUCCESS`.
 
-The next method you will add to the adapter is the `onCreateViewHolder` method. This method is used by the adapter anytime an item from the list is to be displayed. The method creates a new ViewHolder using a layout reference you pass to it. Go ahead and add the method to your class like so:
+The next method you will add to the adapter is the `onCreateViewHolder` method. This method is used by the adapter when a new ViewHolder of the given view type is needed. The method creates a new ViewHolder using a layout reference you pass to it. Go ahead and add the method to your class like so:
 
 ```kotlin
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
@@ -229,13 +229,13 @@ public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int
 
 Based on the return value of the `getItemViewType` method you created earlier, you know the layout resource to use in creating your ViewHolder. There are two separate ViewHolders used here; `ToDoViewHolder`  and `LoaderViewHolder`.
 
-
 > A ViewHolder describes an item view and metadata about its place within the `RecyclerView`. So, a ViewHolder keeps track of a view and the data you want to bind to that view.
 
-Create a new class named `ToDoViewHolder` in the `com.auth0.todo.util` directory and add this:
+Create a new class named `ToDoViewHolder` in the `com.auth0.todo.util` package and add this:
 
 ```kotlin
 // ./app/src/main/java/com/auth0/todo/util/ToDoViewHolder.java
+
 package com.auth0.todo.util;
 
 import android.view.View;
@@ -263,10 +263,11 @@ public class ToDoViewHolder extends RecyclerView.ViewHolder {
 
 This ViewHolder will be used when you want to display a todo item. In the constructor, it is initialized with a view as you did in the penultimate snippet. In the constructor, you also initialized the `textView` with the view’s id. The `bind` method uses the message item from the  `toDoItem` object to set the text on the `textView`. 
 
-After that, create the second ViewHolder named `LoaderViewHolder` in the `com.auth0.todo.util` directory and add this snippet:
+After that, create the second ViewHolder named `LoaderViewHolder` in the `com.auth0.todo.util` directory and add this:
 
 ```kotlin
 // ./app/src/main/java/com/auth0/todo/util/LoaderViewHolder.java
+
 package com.auth0.todo.util;
 
 import android.view.View;
@@ -331,7 +332,7 @@ public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int positi
 }
 ```
 
-This method still makes use of the `getItemViewType` method you created earlier. Depending of the view type at any position on the list, the `bind` method of the corresponding ViewHolder is called. 
+This method still makes use of the `getItemViewType` method you created earlier. Depending on the view type at any position on the list, the `bind` method of the corresponding ViewHolder is called. 
 
 Finally, add these two methods in the `ToDoListAdapter`:
 
@@ -370,9 +371,11 @@ public void updateNetworkState(Status networkState) {
 In this snippet, you have two methods; `getItemCount()` and `updateNetworkState()`. The `getItemCount()` returns the size of the list, so here, you are overriding the method to increment the list by one when a loading item is supposed to be shown. The `updateNetworkState()` method is a public method that will be used to update the status of the `networkState` object and refresh the list after doing so. 
 
 ### Creating a DataSource
-you will now create a data source which will fetch your data in little chunks. In the `com.auth0.todo.network` package, create a new class named `ToDoDataSource` and set it up like so:
+As mentioned earlier, you need to implement a DataSource which determines how the data is fetched. In the `com.auth0.todo.network` package, create a new class named `ToDoDataSource` and set it up like so:
 
 ```kotlin
+// ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
+
 package com.auth0.todo.network;
 
 import android.content.Context;
@@ -419,6 +422,8 @@ In this class, you are extending one of the `DataSource` interface implementatio
 The `loadInitial()` method is called when data is supposed to be loaded initially. This method is typically called once, at the start of the list. Add this snippet to your `loadInitial()` method:
 
 ```kotlin
+// ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
+
 status.postValue(Status.LOADING);
 JsonArrayRequest microPostsRequest = new JsonArrayRequest(url, response -> {
     pageCount++;
@@ -437,9 +442,11 @@ Here, you first set the status of the `status` object to loading, then you make 
 
 If the request fails, the `status` object is updated accordingly and the `loadInitial()` method is assigned to the `retry` object. This means that if a request retry is to be performed, it will attempt the `loadInitial()` method again.
 
-The next method `loadBefore()` will be left empty because you do not need it. The `loadAfter()` method is used to load subsequent pages and items from the server. Add this snippet to the `loadAfter()` method:
+The next method `loadBefore()` will be left empty because you do not need it. The `loadAfter()` method is used to load subsequent pages from the server. Add this snippet to the `loadAfter()` method:
 
 ```kotlin
+// ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
+
 status.postValue(Status.LOADING);
 String updatedUrl = url + "?page=" + pageCount;
 JsonArrayRequest microPostsRequest = new JsonArrayRequest(updatedUrl, response -> {
@@ -455,11 +462,13 @@ JsonArrayRequest microPostsRequest = new JsonArrayRequest(updatedUrl, response -
 queue.add(microPostsRequest);
 ```
 
-This snippet is similar to what you had in the `loadInitial()` method. The difference here is that you are appending the `pageCount` to the url so that the server can know which page to fetch from.
+This snippet is similar to what you had in the `loadInitial()` method. The difference here is that you are appending the `pageCount` to the url so that the server can know which page to fetch.
 
 The `loadInitial()` and `loadAfter()` methods make use of a `transformResponse()` method. Create the method inside the `ToDoDataSource` class:
 
-```
+```kotlin
+// ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
+
 private List<ToDoItem> transformResponse(JSONArray response) {
 
     List<ToDoItem> toDoItems = new ArrayList<>(response.length());
@@ -483,9 +492,11 @@ private List<ToDoItem> transformResponse(JSONArray response) {
 }
 ```
 
-The method takes the response from the server and parses it to a list of `ToDoItem` items. After that, add this method to the class:
+The method takes the response from the server and parses it to a list of `ToDoItem` items. After that, add the `retryFailedRequest()` method to the class:
 
 ```kotlin
+// ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
+
 public void retryFailedRequest() {
     Consumer previousRetry = retry;
     retry = null;
@@ -495,11 +506,11 @@ public void retryFailedRequest() {
 }
 ```
 
-This method executes the retry function stored in the `retry` object after which the object is cleared. This function will be used soon enough.
+Here, you have a public method that will execute the function stored in the `retry` object. Next, you will create a factory class in charge of providing an instance of the `ToDoDataSource` class you have just created. Inside the `com.auth0.todo.network` package, create a new class called `ToDoDataSourceFactory` and add this snippet:
 
-Next, you will create a factory class in charge of providing an instance of the `ToDoDataSource` you have just created. Inside the `com.auth0.todo.network` package, create a new class called `ToDoDataSourceFactory` and add this snippet:
+```kotlin
+// ./app/src/main/java/com/auth0/todo/network/ToDoDataSourceFactory.java
 
-```
 package com.auth0.todo.network;
 
 import android.content.Context;
@@ -526,11 +537,11 @@ public class ToDoDataSourceFactory extends DataSource.Factory<String, ToDoItem> 
 }
 ```
 
-This class is used to create a DataSource (`ToDoDataSource`). You also have a publicly available `todoDataSource` object which gives lates value on the instance of the `ToDoDataSource` created in the factory class.
+This class is used to create a DataSource (`ToDoDataSource`). In this snippet, you have a publicly available `todoDataSource` object which gives the latest value of the instance of the `ToDoDataSource` created in the factory class.
 
 ### Wrapping up your app
 
-Now that you have created the little bits, you would now wrap up the rest in your `MainActivity` class. First, you have to do some cleanups. Remove the interfaces implemented by the class and just keep the parent activity. It should look like this:
+Now that you have created the little bits, you will now stitch things up in your `MainActivity` class. Before that, you have to do some cleanups. Remove the interfaces implemented by the class and keep the parent activity. It should look like this:
 
 ```kotlin
 public class MainActivity extends AuthAwareActivity {
@@ -539,6 +550,8 @@ public class MainActivity extends AuthAwareActivity {
 After that, remove the `onErrorResponse()` and the `onResponse()` methods in the class. Next, replace the `onCreate()` method with this:
 
 ```kotlin
+// ./app/src/main/java/com/auth0/todo/MainActivity.java
+
 @Override
 protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -568,11 +581,13 @@ protected void onCreate(Bundle savedInstanceState) {
 
 Here in this method, you started off creating an instance of  the `ToDoDataSourceFactory` class, then you initialize your `toDoListAdapter` object. Two parameters are passed to the `ToDoListAdapter` constructor, a `DiffUtilCallback` instance and the retry function which is the public function made available in the `ToDoDataSource` class.
 
-After initializing the `RecyclerView` and assigning the adapter to it, you build a `PagedList` which updates the `toDoListAdapter` when there is an update. Finally, you setup a `LiveData` object to monitor network status and update the `ToDoListAdapter` class through the `updateNetworkState()` method.
+After that, you initialized the `RecyclerView` and assigned the adapter to it. Then, you built a `PagedList` which updates the `toDoListAdapter` when there is an update. Finally, you setup a `LiveData` object to monitor network status and update the `ToDoListAdapter` class through the `updateNetworkState()` method.
 
-Now, go ahead and create the missing `DiffUtilCallback` class. Create a new class called `DiffUtilCallback` in the `com.auth0.todo.util` package:
+Now, go ahead and create the missing `DiffUtilCallback` class. Create the class  `DiffUtilCallback` in the `com.auth0.todo.util` package:
 
 ```kotlin
+// ./app/src/main/java/com/auth0/todo/util/DiffUtilCallback.java
+
 package com.auth0.todo.util;
 
 import com.auth0.todo.ToDoItem;
@@ -596,12 +611,12 @@ public class DiffUtilCallback extends DiffUtil.ItemCallback<ToDoItem> {
 }
 ```
 
-This class is used to check the difference between two non-null items in the list. 
+This class is used by the adapter to check the difference between two non-null items in the list. 
 
 
 ## Conclusion
 
-In this article, you have learned about infinite lists and how to implement them in your Android apps. You used the extensive Paging library to achieve this. You learnt how the Paging library introduces separation of concerns to help you manage and handle large data sets.
+In this article, you have learned about infinite lists and how to implement them in your Android apps. You used the extensive Paging library to achieve this. The Paging library introduces the separation of concerns to help you easily manage how your data is fetched and displayed. There is so much more you can achieve with this library if you dive deeper. I'm looking forward to that, catch ya!
 
 
 
