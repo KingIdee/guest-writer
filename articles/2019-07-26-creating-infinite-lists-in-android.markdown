@@ -12,12 +12,12 @@ related:
 - 2017-11-15-an-example-of-all-possible-elements
 ---
 
-**TL;DR:** In the third part of these series, you will learn how to create infinite lists with the Android Paging Library. You can find the final code developed throughout the article in this GitHub repository.
+**TL;DR:** In the third part of these series, you will learn how to create infinite lists with the Android Paging Library. You can find the final code developed throughout the article in this [GitHub repository](https://github.com/KingIdee/to-do-android-app-part-3).
 
 
 ## Prerequisites
 
-Since this is the third part of a series, it is recommended that you have completed the first two parts of the series, however, if you have not done so, you can still jump on this. It is still expected that you possess some prior understanding of Android development. The prerequisites from the [first part](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1/#Prerequisites) still stand also.
+Since this is the third part of a series, it is recommended that you have completed [part 1](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1) and [part 2](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-2) of the series, however, if you have not done so, you can still jump on this. It is still expected that you possess some prior understanding of Android development. The prerequisites from the [first part](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1/#Prerequisites) still stand also.
 
 ## Introduction
 
@@ -25,24 +25,25 @@ Infinite scrolling is a scenario where data is continuously loaded as a user scr
 
 Infinite lists are becoming increasingly popular among apps because scrolling is easier and more engaging for a user. As much as this looks like an almighty reason to always use it, it comes with some cons, like performance consequences if not properly implemented. Also, users can easily get lost while scrolling, among other reasons.
 
-In the article, you will learn how to implement infinite lists in your android applications. You will be building on top of the project from the second part of the series which can be found [here](https://github.com/auth0-blog/to-do-android-app-part-2).
+In this article, you will learn how to implement infinite lists in your android applications. You will be building on top of the project from the second part of the series, so go ahead and fork the [GitHub repository](https://github.com/auth0-blog/to-do-android-app-part-2). 
 
-## Paging library introduction 
+
+## Paging Library Introduction 
 
 Before now, implementing infinite lists in Android required adding a scroll listener to the `RecyclerView` to monitor the scroll position and distance to the end of the list. This approach was not so effective as you can see from a response to a [StackOverflow question here](https://stackoverflow.com/questions/47718270/why-do-i-need-to-use-the-new-paging-library-android-architecture-components):
 
 “*You need to detect that the user has scrolled close enough to the end of the list to need to fetch data. You need to fetch that data. You need a `RecyclerView.Adapter` that can deal with incremental additions to that data. You need some sort of LRU-style caching rules to get rid of older data (that the user has scrolled past) to limit overall memory consumption. You need to handle the scenario where the user scrolls past your current data before additional data gets loaded. And so on.*”
 
-And so the Android team at Google built the Paging library. The Paging library is majorly made up of three components:
+And so the Android team at Google built the [Paging library](https://developer.android.com/topic/libraries/architecture/paging). The Paging library is majorly made up of three components:
 
 ### PagedList
 This is the component that loads data in chunks or loads data in pages. It makes sure that data is loaded asynchronously in the proper thread and the updates are delivered seamlessly. You can configure this component with custom initial load size, page size, prefetch distance, etc.
 
 ### PagedListAdapter
-This is the base adapter you need to extend when building an adapter for your list. This component works hand in hand with the PagedList.
+This is the base adapter you need to extend when building an adapter for your list. This component works hand in hand with the "PagedList".
 
 ### DataSource
-This is an interface you need to implement when using this library. It is used to determine how data is fetched. When implementing a DataSource, it is advisable to make use of one of the following subclasses made available:
+This is an interface you need to implement when using this library. It is used to determine how data is fetched. When implementing a "DataSource", it is advisable to make use of one of the following subclasses made available:
 
 - [PageKeyedDataSource](https://developer.android.com/reference/androidx/paging/PageKeyedDataSource.html): This is used where the keys for the previous and next page are returned. This is a popular use-case because most backends are built to deliver keys for large data sets. 
 
@@ -50,14 +51,17 @@ This is an interface you need to implement when using this library. It is used t
 - [ItemKeyedDataSource](https://developer.android.com/reference/androidx/paging/ItemKeyedDataSource.html): This is used if you want to use data from item `N-1` (previous item) to load the `N` (current item).
 
 
-- [PositionalDataSource](https://developer.android.com/reference/androidx/paging/PositionalDataSource.html): This is used to load data within a specific position, say from item 10 to item 50. Using this class requires that you know the size of your data. Because of this, the class is usually used you are fetching from the local storage.
+- [PositionalDataSource](https://developer.android.com/reference/androidx/paging/PositionalDataSource.html): This is used to load data within a specific position, say from item 10 to item 50. Using this class requires that you know the size of your data. Because of this, the class is mostly used when you are fetching from the local storage.
 
-## Paging library in action
+## Paging Library in Action
 
 In this tutorial, you will build an infinite list for your Android app using the Paging library. The app will fetch data from a server in little chunks. While implementing this, you will equally learn how to handle errors and retry network requests for your infinite lists.
 
 ### Adding dependencies
-For this part, you will need two additional libraries namely; the RecyclerView library to manage the lists, and the Paging library to handle infinite scrolling.
+For this part, you will need two additional libraries namely; 
+
+- The RecyclerView library to manage the lists, and 
+- The Paging library to handle infinite scrolling.
 
 To install these libraries, open the `./app/build.gradle` in your project, and update the `dependencies` section as follows:
 
@@ -554,7 +558,7 @@ public class ToDoDataSourceFactory extends DataSource.Factory<String, ToDoItem> 
 
 This class is used to create a DataSource (`ToDoDataSource`). In this snippet, you have a publicly available `todoDataSource` object which gives the latest value of the instance of the `ToDoDataSource` created in the factory class.
 
-### Wrapping up your app
+### Wrapping up your App
 
 Now that you have created the little bits, you will now stitch things up in your `MainActivity` class. Before that, you have to do some cleanups. Replace the import section with this:
 
