@@ -14,7 +14,6 @@ related:
 
 **TL;DR:** In the third part of these series, you will learn how to create infinite lists with the Android Paging Library. You can find the final code developed throughout the article in this [GitHub repository](https://github.com/KingIdee/to-do-android-app-part-3).
 
-
 ## Prerequisites
 
 Since this is the third part of a series, it is recommended that you have completed [part 1](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1) and [part 2](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-2) of the series, however, if you have not done so, you can still jump on this. It is still expected that you possess some prior understanding of Android development. The prerequisites from the [first part](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1/#Prerequisites) still stand also.
@@ -26,7 +25,6 @@ Infinite scrolling is a scenario where data is continuously loaded as a user scr
 Infinite lists are becoming increasingly popular among apps because scrolling is easier and more engaging for a user. As much as this looks like an almighty reason to always use it, it comes with some cons, like performance consequences if not properly implemented. Also, users can easily get lost while scrolling, among other reasons.
 
 In this article, you will learn how to implement infinite lists in your android applications. You will be building on top of the project from the second part of the series, so go ahead and fork the [GitHub repository](https://github.com/auth0-blog/to-do-android-app-part-2). 
-
 
 ## Paging Library Introduction 
 
@@ -47,9 +45,7 @@ This is an interface you need to implement when using this library. It is used t
 
 - [PageKeyedDataSource](https://developer.android.com/reference/androidx/paging/PageKeyedDataSource.html): This is used where the keys for the previous and next page are returned. This is a popular use-case because most backends are built to deliver keys for large data sets. 
 
-
 - [ItemKeyedDataSource](https://developer.android.com/reference/androidx/paging/ItemKeyedDataSource.html): This is used if you want to use data from item `N-1` (previous item) to load the `N` (current item).
-
 
 - [PositionalDataSource](https://developer.android.com/reference/androidx/paging/PositionalDataSource.html): This is used to load data within a specific position, say from item 10 to item 50. Using this class requires that you know the size of your data. Because of this, the class is mostly used when you are fetching from the local storage.
 
@@ -559,7 +555,6 @@ public class ToDoDataSourceFactory extends DataSource.Factory<String, ToDoItem> 
 This class is used to create a DataSource (`ToDoDataSource`). In this snippet, you have a publicly available `todoDataSource` object which gives the latest value of the instance of the `ToDoDataSource` created in the factory class.
 
 ### Wrapping up your App
-
 Now that you have created the little bits, you will now stitch things up in your `MainActivity` class. Before that, you have to do some cleanups. Replace the import section with this:
 
 ```java
