@@ -12,11 +12,11 @@ related:
 - 2017-11-15-an-example-of-all-possible-elements
 ---
 
-**TL;DR:** In the third part of these series, you will learn how to create infinite lists with the Android Paging Library. You can find the final code developed throughout the article in this [GitHub repository](https://github.com/KingIdee/to-do-android-app-part-3).
+**TL;DR:** In the third part of these series, you will learn how to create infinite lists with the [Android Paging library](https://developer.android.com/topic/libraries/architecture/paging). You can find the final code developed throughout the article in this [GitHub repository](https://github.com/KingIdee/to-do-android-app-part-3).
 
 ## Prerequisites
 
-Since this is the third part of a series, it is recommended that you have completed [part 1](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1) and [part 2](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-2) of the series, however, if you have not done so, you can still jump on this. It is still expected that you possess some prior understanding of Android development. The prerequisites from the [first part](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1/#Prerequisites) still stand also.
+Since this is the third part of a series, it is recommended that you have completed [part 1](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1) and [part 2](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-2) of the series. However, if you have not done so, you can still jump on this. It is still expected that you possess some prior understanding of Android development. The prerequisites from the [first part](https://auth0.com/blog/android-tutorial-building-and-securing-your-first-app-part-1/#Prerequisites) still stand also.
 
 ## Introduction
 
@@ -24,7 +24,7 @@ Infinite scrolling is a scenario where data is continuously loaded as a user scr
 
 Infinite lists are becoming increasingly popular among apps because scrolling is easier and more engaging for a user. As much as this looks like an almighty reason to always use it, it comes with some cons, like performance consequences if not properly implemented. Also, users can easily get lost while scrolling, among other reasons.
 
-In this article, you will learn how to implement infinite lists in your android applications. You will be building on top of the project from the second part of the series, so go ahead and fork the [GitHub repository](https://github.com/auth0-blog/to-do-android-app-part-2). 
+In this article, you will learn how to implement infinite lists in your Android applications. You will be building on top of the project from the second part of the series, so go ahead and fork the [GitHub repository](https://github.com/auth0-blog/to-do-android-app-part-2). 
 
 ## Paging Library Introduction 
 
