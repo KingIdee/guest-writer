@@ -105,7 +105,7 @@ When frequently making network requests to load data, a few things can go wrong,
 
 In this regard, you will create an enum that holds the status of a network request. First, create a new package called `network` inside `com.auth0.todo`. After that, create the enum named `Status` and add the following code to it:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/network/Status.java
 
 package com.auth0.todo.network;
@@ -122,7 +122,7 @@ From the code, the enum has three constants which represent the status of any ne
 ### Modifying your List Adapter
 Since you have switched from a `ListView`, you need change the element in the `activity_main.xml` and revamp your `ToDoListAdapter` class. Open the `activity_main.xml` file and replace the `ListView` tag with `androidx.recyclerview.widget.RecyclerView`. Then, open your `ToDoListAdapter` class and replace it with this snippet:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
 
 package com.auth0.todo.util;
@@ -160,7 +160,7 @@ The `PagedListAdapter` class extends the `RecyclerView.Adapter` class and so, yo
 
 The `getItemViewType` method is used to return view type of an item at a particular position. The method provides you with the current position of the list and you can use that to perform your logic. Add the method to your `ToDoListAdapter` class:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
 
 @Override
@@ -203,7 +203,7 @@ Here in this method, you are checking to know when to display the normal todo it
 
 This layout contains a progress bar that will be displayed when you are loading data from the server and a button to retry network requests if an error occurred. After that, add the missing `hasExtraRow()` method still in the `ToDoListAdapter` class like so:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
 
 private Boolean hasExtraRow(){
@@ -215,7 +215,7 @@ This method checks to know if an extra row should be shown. That is simply known
 
 The next method you will add to the adapter is the `onCreateViewHolder` method. This method is used by the adapter when a new ViewHolder of the given view type is needed. The method creates a new ViewHolder using a layout reference you pass to it. Go ahead and add the method to your class like so:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
 
 @Override
@@ -244,7 +244,7 @@ Based on the return value of the `getItemViewType` method you created earlier, y
 
 Create a new class named `ToDoViewHolder` in the `com.auth0.todo.util` package and add this:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/ToDoViewHolder.java
 
 package com.auth0.todo.util;
@@ -276,7 +276,7 @@ This ViewHolder will be used when you want to display a todo item. In the constr
 
 After that, create the second ViewHolder named `LoaderViewHolder` in the `com.auth0.todo.util` directory and add this:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/LoaderViewHolder.java
 
 package com.auth0.todo.util;
@@ -322,7 +322,7 @@ This ViewHolder is similar to the  `ToDoViewHolder` you created earlier. This is
 
 The next method you will add to your `ToDoListAdapter` is the `onBindViewHolder` method. This method is in charge of binding data to a particular position on the list. Add the method to your adapter like so:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
 
 @Override
@@ -347,7 +347,7 @@ This method still makes use of the `getItemViewType` method you created earlier.
 
 Finally, add these two methods in the `ToDoListAdapter`:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/ToDoListAdapter.java
 
 @Override
@@ -384,7 +384,7 @@ In this snippet, you have two methods; `getItemCount()` and `updateNetworkState(
 ### Creating a DataSource
 As mentioned earlier, you need to implement a DataSource which determines how the data is fetched. In the `com.auth0.todo.network` package, create a new class named `ToDoDataSource` and set it up like so:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
 
 package com.auth0.todo.network;
@@ -432,7 +432,7 @@ In this class, you are extending one of the `DataSource` interface implementatio
 
 The `loadInitial()` method is called when data is supposed to be loaded initially. This method is typically called once, at the start of the list. Add this snippet to your `loadInitial()` method:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
 
 status.postValue(Status.LOADING);
@@ -455,7 +455,7 @@ If the request fails, the `status` object is updated accordingly and the `loadIn
 
 The next method `loadBefore()` will be left empty because you do not need it. The `loadAfter()` method is used to load subsequent pages from the server. Add this snippet to the `loadAfter()` method:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
 
 status.postValue(Status.LOADING);
@@ -477,7 +477,7 @@ This snippet is similar to what you had in the `loadInitial()` method. The diffe
 
 The `loadInitial()` and `loadAfter()` methods make use of a `transformResponse()` method. Create the method inside the `ToDoDataSource` class:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
 
 private List<ToDoItem> transformResponse(JSONArray response) {
@@ -505,7 +505,7 @@ private List<ToDoItem> transformResponse(JSONArray response) {
 
 The method takes the response from the server and parses it to a list of `ToDoItem` items. When the `ToDoItem` constructor was created in the previous part, it was not declared public and so you cannot access it. Open the file and make the constructor public like so:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/ToDoItem.java
 
 public ToDoItem(String _id, String message) {
@@ -513,7 +513,7 @@ public ToDoItem(String _id, String message) {
 
 After that, add the `retryFailedRequest()` method to the `ToDoDataSource` class:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/network/ToDoDataSource.java
 
 public void retryFailedRequest() {
@@ -527,7 +527,7 @@ public void retryFailedRequest() {
 
 Here, you have a public method that will execute the function stored in the `retry` object. Next, you will create a factory class in charge of providing an instance of the `ToDoDataSource` class you have just created. Inside the `com.auth0.todo.network` package, create a new class called `ToDoDataSourceFactory` and add this snippet:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/network/ToDoDataSourceFactory.java
 
 package com.auth0.todo.network;
@@ -562,7 +562,7 @@ This class is used to create a DataSource (`ToDoDataSource`). In this snippet, y
 
 Now that you have created the little bits, you will now stitch things up in your `MainActivity` class. Before that, you have to do some cleanups. Replace the import section with this:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/MainActivity.java
 
 import android.content.Intent;
@@ -583,7 +583,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 After that, remove the interfaces implemented by the class and keep the parent activity. It should look like this:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/MainActivity.java
 
 public class MainActivity extends AuthAwareActivity {
@@ -591,7 +591,7 @@ public class MainActivity extends AuthAwareActivity {
 
 Then, remove the `onErrorResponse()` and the `onResponse()` methods in the class. Next, replace the `onCreate()` method with this:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/MainActivity.java
 
 @Override
@@ -627,7 +627,7 @@ After that, you initialized the `RecyclerView` and assigned the adapter to it. T
 
 Now, go ahead and create the missing `DiffUtilCallback` class. Create the class  `DiffUtilCallback` in the `com.auth0.todo.util` package:
 
-```kotlin
+```java
 // ./app/src/main/java/com/auth0/todo/util/DiffUtilCallback.java
 
 package com.auth0.todo.util;
