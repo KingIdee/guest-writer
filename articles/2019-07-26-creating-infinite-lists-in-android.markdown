@@ -28,9 +28,9 @@ In this article, you will learn how to implement infinite lists in your Android 
 
 ## Paging Library Introduction 
 
-Before now, implementing infinite lists in Android required adding a scroll listener to the `RecyclerView` to monitor the scroll position and distance to the end of the list. This approach was not so effective as you can see from a response to a [StackOverflow question here](https://stackoverflow.com/questions/47718270/why-do-i-need-to-use-the-new-paging-library-android-architecture-components):
+Before the introduction of the Paging library, implementing infinite lists in Android required adding a scroll listener to the `RecyclerView` to monitor the scroll position and distance to the end of the list. This approach was not so effective as you can see from a response to a [StackOverflow question here](https://stackoverflow.com/questions/47718270/why-do-i-need-to-use-the-new-paging-library-android-architecture-components):
 
-“*You need to detect that the user has scrolled close enough to the end of the list to need to fetch data. You need to fetch that data. You need a `RecyclerView.Adapter` that can deal with incremental additions to that data. You need some sort of LRU-style caching rules to get rid of older data (that the user has scrolled past) to limit overall memory consumption. You need to handle the scenario where the user scrolls past your current data before additional data gets loaded. And so on.*”
+> “You need to detect that the user has scrolled close enough to the end of the list to need to fetch data. You need to fetch that data. You need a `RecyclerView.Adapter` that can deal with incremental additions to that data. You need some sort of LRU-style caching rules to get rid of older data (that the user has scrolled past) to limit overall memory consumption. You need to handle the scenario where the user scrolls past your current data before additional data gets loaded. And so on.”
 
 And so the Android team at Google built the [Paging library](https://developer.android.com/topic/libraries/architecture/paging). The Paging library is majorly made up of three components:
 
@@ -660,15 +660,7 @@ This is so that each item of the list does not occupy the whole screen.
 
 ## Testing
 
-You will test your app with a backend that serves paginated data. Clone this [repo](https://github.com/KingIdee/to-dos-api-express) and follow the instructions to set it up. The backend uses an in-memory database, so to populate it with a lot of data for testing, you can replace line 56 of the `index.js` file with this:
-
-```javascript
-for (let index = 0; index < 100; index++) {    
-    await insertToDo({ message: "Buy pizza!" + index });    
-}
-```
-
-When you run your app, you should have something like this:
+You will test your app with a backend that serves paginated data. Clone this [repo](https://github.com/KingIdee/to-dos-api-express) and follow the instructions to set it up. The backend populates an in-memory database with 100 random todos. After setting up the backend, run your Android app. You should have something like this:
 
 ![Demo](demo.gif)
 
