@@ -48,7 +48,7 @@ npx create-react-app auth0-mobx-app
 
 This will generate a new project named **auth0-mobx-app** in the directory where you ran the command. This process is expected to take a few minutes.
 
-Now that you have generated your project, the ideal thing to do next is to install dependencies that you need in the course of developing your app. If you’re not in the directory of your MobX app yet, you can use this command to move into the directory:
+Now that you have generated your project, the ideal thing to do next is to install dependencies that you need in the course of developing your app. If you are not in the directory of your MobX app yet, use this command to move into the directory:
 
 ```bash
 cd auth0-mobx-app
@@ -88,7 +88,7 @@ This command ejects some scripts and configs initially inside the `node_modules`
 After that, add the configuration for the babel plugin you just installed. Create a `.babelrc` file in the project directory and add the following configuration to the file as shown below:
 
 ```json
-// ./babelrc
+// .babelrc
 
 {
   "presets": ["react-app"],
@@ -134,14 +134,14 @@ class Store {
         name: 'Tshirt sleeker',
         description: 'Wonderfully fitted',
         price: 350,
-        image: require('./img/image-2.jpeg')
+        image: require('./img/image-2.jpg')
       },
       {
         id: 3,
         name: 'Tshirt sleeker',
         description: 'Wonderfully fitted',
         price: 250,
-        image: require('./img/image-3.jpeg')
+        image: require('./img/image-3.jpg')
       }
     ];
     carts = [];
