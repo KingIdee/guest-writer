@@ -545,7 +545,7 @@ class Store {
 
   // ... Leave the other objects and functions untouched
 
-  loading = true;
+  loading = false;
   auth0 = null;
   authenticated = null;
 
@@ -673,6 +673,7 @@ Now, open your `src/App.js` file. First, add these to the import section:
 // src/App.js
 
 import Login from "./components/Auth/Login"
+import Auth from './components/Auth/Auth';
 import Callback from "./callback/Callback"
 ```
 
@@ -687,6 +688,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={shoppingStore}>
+        <Auth />
         <div className='container'>
           <Route
             exact
