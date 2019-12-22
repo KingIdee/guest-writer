@@ -541,20 +541,23 @@ Now that you have setup your Auth0 app, you will ahead with the Auth0 implementa
 ```JavaScript
 // src/Store.js
 
-// ... Leave the other objects and functions untouched
+class Store {
 
-loading = true;
-auth0 = null;
-authenticated = null;
+  // ... Leave the other objects and functions untouched
 
-setLoader(loading){
-  this.loading = loading;
-}
-setAuth(token){
-  this.authenticated = token;
-}
-initialize(auth0){
-  this.auth0 = auth0;
+  loading = true;
+  auth0 = null;
+  authenticated = null;
+
+  setLoader(loading) {
+    this.loading = loading;
+  }
+  setAuth(token) {
+    this.authenticated = token;
+  }
+  initialize(auth0) {
+    this.auth0 = auth0;
+  }
 }
 ```
 
