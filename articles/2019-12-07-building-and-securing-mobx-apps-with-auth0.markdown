@@ -12,7 +12,7 @@ related:
   - 2017-11-15-an-example-of-all-possible-elements
 ---
 
-**TL;DR:** [MobX](https://mobx.js.org/) is one of the popular state management libraries out there. It is frequently used with JavaScript frameworks such as [React](https://reactjs.org/) and [VueJs](https://vuejs.org/). [Auth0](https://auth0.com/), on the other hand is an identity management solution for both web and mobile apps. In this article, you will learn how to build and secure MobX apps with Auth0. The fully functional app can be found on this [GitHub Repository](https://github.com/KingIdee/auth0-mobx-shopping-cart).
+**TL;DR:** [MobX](https://mobx.js.org/) is one of the popular state management libraries out there. It is frequently used with JavaScript frameworks such as [React](https://reactjs.org/) and [VueJs](https://vuejs.org/). [Auth0](https://auth0.com/), on the other hand, is an identity management solution for both web and mobile apps. In this article, you will learn how to build and secure MobX apps with Auth0. The fully functional app can be found on this [GitHub Repository](https://github.com/KingIdee/auth0-mobx-shopping-cart).
 
 ## Prerequisites
 
@@ -20,27 +20,27 @@ You are expected to have prior knowledge of building web apps with React and sta
 
 ## Introduction
 
-State management is one of the major points of software applications and React apps are not exempted. It is one of the many functionalities that come packed with React by default. Little wonder React is even referred to as a _state management library_ \*\*by some. Because of how important state management is, a lot of solutions have sprung up in an attempt to make it easier. MobX is one of three popular options out there to help manage your state in React apps. Other options include [React Context API](https://reactjs.org/docs/context.html) and [Redux](https://redux.js.org/).
+State management is one of the major talking points of software applications and React apps are not exempted. It is one of the many functionalities that come packed with React by default. Little wonder React is even referred to as a _state management library_ by some. Because of how important state management is, a lot of solutions have sprung up in an attempt to make it easier. MobX is one of three popular options out there to help manage your state in React apps. Other options include [React Context API](https://reactjs.org/docs/context.html) and [Redux](https://redux.js.org/).
 
 MobX uses a more reactive approach to state management. Some of the core concepts of MobX includes the following:
 
-- Observable state: With this concept, you can make an object emit new changes on them. They are usually represented with the `@observable` decorator.
+- Observable state: With this concept, you can make an object emit new changes when they are updated. They are usually represented with the `@observable` decorator.
 - Observers: The observers are notified of changes made on the observable state. And so the observable state and observers work hand in hand.
 - Computed values: Computed values are used to derive values from an observable state. Let’s say you have a function that works with an object marked as `@observable`. Anytime the object changes, the function will be automatically computed and the value derived. Computed values are usually represented with the `@computed` decorator.
-- Actions: These are functions that modify state and inform computed properties when an action is completed. Typically, you will use actions for functions that modify observables. There are represented with the `@action` decorator.
+- Actions: These are functions that modify state. Typically, you will use actions for functions that modify observables. There are represented with the `@action` decorator.
 - Reactions: MobX reactions are similar to computed values. But instead of producing a new value, a reaction simply triggers a side effect (side operation). There are three types of reaction functions - `when`, `autorun`, and `reaction`.
 
 MobX is not just a React library, it is also compatible with other JavaScript libraries and frameworks that power the frontend of web apps. If you are a little short in the knowledge of MobX, you can make do with this [resource](https://auth0.com/blog/managing-the-state-of-react-apps-with-mobx/) and the official [docs](https://mobx.js.org/README.html).
 
 ## What You Will Build
 
-In this tutorial, you will build a shopping cart. This is a typical functionality you see in e-commerce apps where a user can add and subtract items to and fro a cart. Implementing a cart involves keeping track of products a user wishes to buy, their respective quantities and prices. You will use MobX to store and manage the cart data in the app. The app will also need users to log in to access the shopping cart and that’s where Auth0 will come in. You will use Auth0 to handle authentication in the app. You can find the entire code used in this article on this [repo](https://github.com/KingIdee/auth0-mobx-shopping-cart).
+In this tutorial, you will build a shopping cart. This is a common functionality you see in e-commerce apps where a user can add and subtract items to and fro a cart. Implementing a cart involves keeping track of products a user wishes to buy, their respective quantities and prices. You will use MobX to store and manage the cart data in the app. The app will also need users to log in to access the shopping cart and that’s where Auth0 will come in. You will use Auth0 to handle authentication in the app. You can find the entire code used in this article on this [repo](https://github.com/KingIdee/auth0-mobx-shopping-cart).
 
 ## Scaffolding Your React App
 
-One of the fastest ways to bootstrap a React app is via the [Create React App](https://github.com/facebookincubator/create-react-app) package. If you are using an old version of ` create-react-``ap``p ` you would want have to update it by following the instructions [here](https://create-react-app.dev/docs/getting-started/).
+One of the fastest ways to bootstrap a React app is via the [Create React App](https://github.com/facebookincubator/create-react-app) package. You will use this to bootstrap your project. If you are using an old version of `create-react-app` you would have to update it by following the instructions [here](https://create-react-app.dev/docs/getting-started/).
 
-You will use this to bootstrap your project. Open a terminal window, move into a directory of your choice and run this command:
+Open a terminal window, move into a directory of your choice and run this command:
 
 ```bash
 npx create-react-app auth0-mobx-app
@@ -48,7 +48,7 @@ npx create-react-app auth0-mobx-app
 
 This will generate a new project named **auth0-mobx-app** in the directory where you ran the command. This process is expected to take a few minutes.
 
-Now that you have generated your project, the ideal thing to do next is to install dependencies that you will need in the course of developing your app. If you’re not in the directory of your MobX app yet, you can use this command to move into the directory:
+Now that you have generated your project, the ideal thing to do next is to install dependencies that you need in the course of developing your app. If you’re not in the directory of your MobX app yet, you can use this command to move into the directory:
 
 ```bash
 cd auth0-mobx-app
@@ -62,20 +62,20 @@ npm install mobx mobx-react react-router react-router-dom @auth0/auth0-spa-js
 
 This command will install the following dependencies:
 
-- `mobx` : This is the main MobX library that powers state management.
-- `mobx-react` : This library contains React specific functions available through MobX.
+- `mobx`: This is the main MobX library that powers state management.
+- `mobx-react`: This library contains React specific functions available through MobX.
 - `react-router-dom` and `react-router`: These libraries will be used to add page navigation to the app.
-- `auth0-spa-js`: This is the Auth0 Client-side library.
+- `auth0-spa-js`: This is the Auth0 client-side library.
 
 ## Setting up MobX on Project
 
-MobX uses decorators to handle its state management and React doesn’t come with support for decorators by default, a babel plugin `@babel/plugin-proposal-decorators` has to be installed using `npm`. Still on your terminal, run the following commands:
+MobX uses decorators to handle its state management and React doesn’t come with support for decorators by default. So you will install a babel plugin `@babel/plugin-proposal-decorators`. Still, on your terminal, run the following commands:
 
 ```bash
 npm install @babel/plugin-proposal-decorators
 ```
 
-After installation you have to eject the React app to be able to configure the babel plugin you just installed. To eject the React app run the following command on your terminal. Ensure that you commit your code to git before running the command below:
+After installation, you have to eject the React app to be able to configure the babel plugin you just installed. To eject the React app run the following command on your terminal. Ensure that you commit your code to git before running the command below:
 
 ```bash
 npm run eject
@@ -89,6 +89,7 @@ After that, add the configuration for the babel plugin you just installed. Creat
 
 ```json
 // ./babelrc
+
 {
   "presets": ["react-app"],
   "plugins": [
@@ -112,12 +113,13 @@ To avoid conflict with the babel plugin configurations, you need to delete the e
 }
 ```
 
-Now, you need to create a store for your application. Stores are usually compulsory in MobX apps. One of the main importance of having them is that it helps you move logic and state out of your components into a standalone testable unit that can be used in both frontend and backend JavaScript. This is usually a good idea if you want to write maintainable and testable apps.
+Now, you need to create a store for your application. Stores are usually compulsory in MobX apps. One of the main importance of having them is that they help you move logic and state out of your components into a standalone testable unit that can be used in both frontend and backend JavaScript. This is usually a good idea if you want to write maintainable and testable apps.
 
 So, go ahead and create a `Store.js` file in the `src` folder. After creating the file, paste this snippet inside it:
 
 ```JavaScript
 // src/Store.js
+
 class Store {
     products = [
       {
@@ -144,19 +146,7 @@ class Store {
     ];
     carts = [];
     currentCart = [];
-    loading = true;
-    auth0 = null;
-    authenticated = null;
 
-    setLoader(loading){
-      this.loading = loading;
-    }
-    setAuth(token){
-      this.authenticated = token;
-    }
-    initialize(auth0){
-      this.auth0 = auth0;
-    }
     removeFromCart(id) {
       this.carts = this.carts.filter(item => {
         return item.product_id !== id;
@@ -217,13 +207,9 @@ From the snippet above, you created a store that holds the state of the app. Her
 - `currentCart` - This is also an empty array and it is similar to the `carts` array. But this holds the initial state of the cart when the user enters the system or logs on to the system.
 - `removeFromCart` - This function will be used to remove an item from the `carts` array.
 - `increaseQuantityInCart` - This function will be used to increase the quantity of a particular item in the `carts` array.
+- `decreaseQuantityInCart` - This function will be used to decrease the quantity of a particular item in the `carts` array.
 - `addToCart` - This function will be used to add a new item to the `carts` array.
-- `loading` - This is used to control loaders which indicates whether a process has completed or not.
-- `auth0` - This is the variable that will hold the instance of the initialized Auth0 client.
-- `authenticated` - This is the variable that will hold the token generated after authenticating user with `auth0`.
-- `setLoader` - This function will be used to alter the state of the loading variable.
-- `setAuth` - This function will be used to set the token generated for a user after authentication with `auth0`.
-- `initialize` - This function will be used to update the initialized auth0 client.
+- `getCart` - This function returns all the data in the `carts` array.
 
 ## Creating your components
 
@@ -233,6 +219,7 @@ Open the `public/index.html` file and add these links in the `<head>` tag:
 
 ```html
 <!-- public/index.html -->
+
 <link
   rel="stylesheet"
   href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -319,7 +306,7 @@ Next, open the `App.css` file and replace its content with this snippet:
 
 The above snippet is the custom styling applied throughout the app to make it look decent.
 
-As mentioned earlier, this application is geared towards building a shopping cart and so you need some dummy data to play with. Here, you will need to add images. Create a folder called `img` in the `src` folder and add three images namely: `image-1.jpg`, ` image-2.``jpg `, and ` image-3.jp``g `. Better still, you can use the images in the [repository](https://github.com/KingIdee/auth0-mobx-shopping-cart/tree/master/src/img).
+As mentioned earlier, this application is geared towards building a shopping cart and so you need some dummy data to play with. Here, you need to add some images in the project. Create a folder called `img` in the `src` folder and add three images namely: `image-1.jpg`, `image-2.jpg`, and `image-3.jpg`. Better still, you can use the images in the [repository](https://github.com/KingIdee/auth0-mobx-shopping-cart/tree/master/src/img).
 
 After setting up the app CSS style and adding images to your project, you will now proceed to build your components.
 
@@ -387,63 +374,65 @@ Next up, you will build the Product component. The Product component will be res
 Create a new file `Product.js` in the `src/components` directory and add the following snippet to it:
 
 ```JavaScript
-    // src/components/Product.js
-    import React, { Component } from 'react';
-    import { observer, inject } from 'mobx-react';
-    import Cart from './Cart';
+// src/components/Product.js
 
-    @inject('store')
-    class Product extends Component {
-      addToCart(id) {
-        this.props.store.addToCart(id);
-      }
-      list(data, index) {
-        return (
-          <div key={index} className='col-md-4 top-space'>
-            <div className='card'>
-              <img
-                className='card-img-top'
-                height={200}
-                src={data.image}
-                alt='Product stuff'
-              />
-              <div className='card-body'>
-                <h4 className='card-title'>{data.name}</h4>
-                <p className='card-text'>{data.description}</p>
-                <div className='detail'>
-                  <div className='price text-center'>$ {data.price}</div>
-                  <button
-                    onClick={() => this.addToCart(data.id)}
-                    className='btn btn-primary btn-sm'
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
+import React, { Component } from 'react';
+import { observer, inject } from 'mobx-react';
+import Cart from './Cart';
+
+@inject('store')
+class Product extends Component {
+  addToCart(id) {
+    this.props.store.addToCart(id);
+  }
+  list(data, index) {
+    return (
+      <div key={index} className='col-md-4 top-space'>
+        <div className='card'>
+          <img
+            className='card-img-top'
+            height={200}
+            src={data.image}
+            alt='Product stuff'
+          />
+          <div className='card-body'>
+            <h4 className='card-title'>{data.name}</h4>
+            <p className='card-text'>{data.description}</p>
+            <div className='detail'>
+              <div className='price text-center'>$ {data.price}</div>
+              <button
+                onClick={() => this.addToCart(data.id)}
+                className='btn btn-primary btn-sm'
+              >
+                Add to Cart
+              </button>
             </div>
           </div>
-        );
-      }
-      render() {
-        return (
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className='row'>
+        <div className='col-md-8'>
           <div className='row'>
-            <div className='col-md-8'>
-              <div className='row'>
-                {this.props.store.products.map((data, index) =>
-                  this.list(data, index)
-                )}
-              </div>
-            </div>
-            <div className='col-md-4'>
-              <div className='top-space'>
-                <Cart />
-              </div>
-            </div>
+            {this.props.store.products.map((data, index) =>
+              this.list(data, index)
+            )}
           </div>
-        );
-      }
-    }
-    export default observer(Product);
+        </div>
+        <div className='col-md-4'>
+          <div className='top-space'>
+            <Cart />
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+export default observer(Product);
 ```
 
 Here, you have the Product component that displays all the products available in the store. The Product component is wrapped with a higher-order component(i.e observer) which automatically subscribes the component to an observable(in this case, `products`) so that this component only re-renders when there is a change in the `products` array.
@@ -454,6 +443,7 @@ Next, open the `src/index.js` file and replace the default code with this snippe
 
 ```JavaScript
 // src/index.js
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -468,7 +458,7 @@ ReactDOM.render(
 
 The difference between this snippet and the default one is that now you’re wrapping your entire component tree with the `BrowserRouter` imported from the `react-router-dom` package.
 
-Next, replace the code in your ` src/``App.js ` file with this snippet:
+Next, replace the code in your `src/App.js` file with this snippet:
 
 ```JavaScript
 // src/App.js
@@ -481,6 +471,7 @@ import { Route } from 'react-router-dom';
 import Store from './Store';
 import { decorate, observable, action } from 'mobx';
 import './App.css';
+
 decorate(Store, {
   products: observable,
   addToCart: action,
@@ -509,9 +500,9 @@ In this snippet, you imported the `Store` defined earlier. The decorate utility 
 
 Finally, you set the Product component to be the home( `/`) route of the application.
 
-At this point, you can run your app by running this command in the project terminal:
+At this point, you can test your app by running this command in the project terminal:
 
-```
+```bash
 npm run start
 ```
 
@@ -543,9 +534,40 @@ When your application has been created, you will see a page like this
 
 Go to the **Settings** tab, scroll to the where you have Allowed Callback URLs and add this URL `http://localhost:3000/callback`.
 
-> Also, copy out your ClientID and Domain as you will need them soon.
+> Copy out your ClientID and Domain as you will need them soon.
 
-Now that you have setup your Auth0 app, you will ahead with the Auth0 implementation in your code. Begin by creating an `Auth` folder in the `src/components` directory. So, you’ll have a directory like this `src/components/Auth`, create an `Auth.js` file there and paste this snippet:
+Now that you have setup your Auth0 app, you will ahead with the Auth0 implementation in your code. You will begin by adding some state objects in the store. Open the `Store.js` file and add these:
+
+```JavaScript
+// src/Store.js
+
+// ... Leave the other objects and functions untouched
+
+loading = true;
+auth0 = null;
+authenticated = null;
+
+setLoader(loading){
+  this.loading = loading;
+}
+setAuth(token){
+  this.authenticated = token;
+}
+initialize(auth0){
+  this.auth0 = auth0;
+}
+```
+
+Here is what the objects and functions you just added do:
+
+- `loading` - This is used to control loaders which indicates whether a process has completed or not.
+- `auth0` - This is the variable that will hold the instance of the initialized Auth0 client.
+- `authenticated` - This is the variable that will hold the token generated after authenticating a user with `auth0`.
+- `setLoader` - This function will be used to alter the state of the loading variable.
+- `setAuth` - This function will be used to set the token generated for a user after authentication with `auth0`.
+- `initialize` - This function will be used to update the initialized Auth0 client.
+
+Next, create an `Auth` folder in the `src/components` directory. So, you’ll have a directory like this `src/components/Auth`, create an `Auth.js` file there and paste this snippet:
 
 ```JavaScript
 // src/components/Auth/Auth.js
@@ -587,6 +609,7 @@ Now create a new `Login.js` file in the `src/components/Auth` folder and paste t
 
 ```JavaScript
 // src/component/Auth/Login.js
+
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 @inject('store')
@@ -611,14 +634,15 @@ class Login extends Component {
 export default Login;
 ```
 
-The Login component only displays a login button. Attached to the button is an `onClick` listener that calls the ` login``WithRedirect() ` method from the `auth0` client. The login button is disabled and shows a loading icon until `auth0` client initialization is complete.
+The Login component only displays a login button. Attached to the button is an `onClick` listener that calls the `loginWithRedirect()` method from the `auth0` client. The login button is disabled and shows a loading icon until `auth0` client initialization is complete.
 
-Earlier in your Auth0 dashboard, you set a callback URL as `http://localhost:3000/callback` to handle the retrieval of a token whenever the user clicks on the login button. What this corresponds to is a route that renders this Callback component when the path matches `/callback`.
+Earlier in your Auth0 dashboard, you set a callback URL as `http://localhost:3000/callback`. So, now you have to create a component that matches the `/callback` path.
 
-So, create a new folder `callback` in the `src` folder. Then create a file `Callback.js` in the `src/callback` directory and paste this snippet:
+Create a new folder `callback` in the `src` folder. Then create a file `Callback.js` in the `src/callback` directory and paste this snippet:
 
 ```JavaScript
 // src/callback/Callback.js
+
 import React, {Component} from 'react';
 import { withRouter } from 'react-router';
 import { observer, inject } from 'mobx-react';
@@ -638,12 +662,13 @@ class Callback extends Component{
 export default withRouter(Callback);
 ```
 
-In this snippet, you are still using the loading variable from the store to track when `auth0` client has been initialized because of it’s asynchronous nature. Once the loading variable changes value signalling the completion of the `auth0` client initialization the life cycle method `componentWillUpdate` runs and handles the callback redirection, gets the user token, sets the token in the store and redirects the user to products page.
+In this snippet, you are using the `loading` object from the store to track when the `auth0` client has been initialized because of its asynchronous nature. Once the value of the`loading` object changes (signalling the completion of the `auth0` client initialization), the life cycle method `componentWillUpdate` runs. This function handles the callback redirection, stores the token in the store and redirects the user to the products page.
 
 Now, open your `src/App.js` file. First, add these to the import section:
 
 ```JavaScript
 // src/App.js
+
 import Login from "./components/Auth/Login"
 import Callback from "./callback/Callback"
 ```
@@ -654,6 +679,7 @@ Then replace the main `App` component with this:
 
 ```JavaScript
 // src/App.js
+
 class App extends Component {
   render() {
     return (
@@ -713,7 +739,7 @@ Then, this should open a browser tab with the URL - `http://localhost:3000`. If 
 
 ![](https://paper-attachments.dropbox.com/s_85DAC1B5742DD922900BC6FF53C1A068559B9C70E254EA0F6B8E3A94E05AA9C8_1576647877972_Screenshot+2019-12-18+at+6.43.11+AM.png)
 
-When the log in button is clicked, you’ll be redirected to the Auth0 authentication page which requests you to either login or sign up with any available method.
+When the login button is clicked, you’ll be redirected to the Auth0 authentication page which requests you to either login or sign up.
 
 ![](https://paper-attachments.dropbox.com/s_85DAC1B5742DD922900BC6FF53C1A068559B9C70E254EA0F6B8E3A94E05AA9C8_1576647932662_Screenshot+2019-12-18+at+6.43.24+AM.png)
 
