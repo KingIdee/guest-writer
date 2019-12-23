@@ -545,7 +545,7 @@ class Store {
 
   // ... Leave the other objects and functions untouched
 
-  loading = false;
+  loading = true;
   auth0 = null;
   authenticated = null;
 
