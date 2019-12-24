@@ -679,6 +679,15 @@ import Callback from "./callback/Callback"
 
 Here, you imported the Login and Callback components to match the `/callback` and `/login` paths respectively.
 
+Then in your `App.js` file, add the `loading` object as an observable like so:
+
+```JavaScript
+decorate(Store, {
+  // ... Other observables and actions
+  loading: observable
+});
+```
+
 Then replace the main `App` component with this:
 
 ```JavaScript
