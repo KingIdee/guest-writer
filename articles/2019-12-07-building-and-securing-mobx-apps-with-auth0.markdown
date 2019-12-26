@@ -585,7 +585,6 @@ class Auth extends Component{
       let auth0 = await createAuth0Client({
         domain: 'AUTH0_DOMAIN',
         client_id: 'AUTH0_CLIENT_ID',
-        audience: 'AUTH0_AUDIENCE',
         redirect_uri: 'http://localhost:3000/callback',
         responseType: 'token id_token',
         scope: 'openid profile'
@@ -677,7 +676,7 @@ import Auth from './components/Auth/Auth';
 import Callback from "./callback/Callback"
 ```
 
-Here, you imported the Login and Callback components to match the `/callback` and `/login` paths respectively.
+Here, you imported the Login, Auth, and Callback components.
 
 In your `App.js` file, add the `loading` object as an observable like so:
 
