@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Building and securing MobX apps with Auth0'
+title: 'Building and Securing MobX apps with Auth0'
 description: 'Learn how to build React apps with MobX and secure them with Auth0'
 date: '2019-12-07 08:30'
 author:
@@ -30,11 +30,11 @@ MobX uses a more reactive approach to state management. Some of the core concept
 - Actions: These are functions that modify state. Typically, you will use actions for functions that modify observables. There are represented with the `@action` decorator.
 - Reactions: MobX reactions are similar to computed values. But instead of producing a new value, a reaction simply triggers a side effect (side operation). There are three types of reaction functions - `when`, `autorun`, and `reaction`.
 
-MobX is not just a React library, it is also compatible with other JavaScript libraries and frameworks that power the frontend of web apps. If you are a little short in the knowledge of MobX, you can make do with this [resource](https://auth0.com/blog/managing-the-state-of-react-apps-with-mobx/) and the official [docs](https://mobx.js.org/README.html).
+MobX is not just a React library; it is also compatible with other JavaScript libraries and frameworks that power the frontend of web apps. If you are a little short in the knowledge of MobX, you can make do with this [resource](https://auth0.com/blog/managing-the-state-of-react-apps-with-mobx/) and the official [docs](https://mobx.js.org/README.html).
 
 ## What You Will Build
 
-In this tutorial, you will build a shopping cart. This is a common functionality you see in e-commerce apps where a user can add and subtract items to and fro a cart. Implementing a cart involves keeping track of products a user wishes to buy, their respective quantities and prices. You will use MobX to store and manage the cart data in the app. The app will also need users to log in to access the shopping cart and that’s where Auth0 will come in. You will use Auth0 to handle authentication in the app. You can find the entire code used in this article on this [repo](https://github.com/KingIdee/auth0-mobx-shopping-cart).
+In this tutorial, you will build a shopping cart. This is a common functionality you see in e-commerce apps where a user can add and subtract items to and from a cart. Implementing a cart involves keeping track of products a user wishes to buy, their respective quantities and prices. You will use MobX to store and manage the cart data in the app. The app will also need users to log in to access the shopping cart and that’s where Auth0 will come in. You will use Auth0 to handle authentication in the app. You can find the entire code used in this article on this [repo](https://github.com/KingIdee/auth0-mobx-shopping-cart).
 
 ## Scaffolding Your React App
 
@@ -67,7 +67,7 @@ This command will install the following dependencies:
 - `react-router-dom` and `react-router`: These libraries will be used to add page navigation to the app.
 - `auth0-spa-js`: This is the Auth0 client-side library.
 
-## Setting up MobX on Project
+## Setting up MobX
 
 MobX uses decorators to handle its state management and React doesn’t come with support for decorators by default. So you will install a babel plugin `@babel/plugin-proposal-decorators`. Still, on your terminal, run the following commands:
 
@@ -115,7 +115,7 @@ To avoid conflict with the babel plugin configurations, you need to delete the e
 
 Now, you need to create a store for your application. Stores are usually compulsory in MobX apps. One of the main importance of having them is that they help you move logic and state out of your components into a standalone testable unit that can be used in both frontend and backend JavaScript. This is usually a good idea if you want to write maintainable and testable apps.
 
-So, go ahead and create a `Store.js` file in the `src` folder. After creating the file, paste this snippet inside it:
+Go ahead and create a `Store.js` file in the `src` folder. After creating the file, paste this snippet inside it:
 
 ```JavaScript
 // src/Store.js
@@ -211,7 +211,7 @@ From the snippet above, you created a store that holds the state of the app. Her
 - `addToCart` - This function will be used to add a new item to the `carts` array.
 - `getCart` - This function returns all the data in the `carts` array.
 
-## Creating your components
+## Creating Your Components
 
 In this section, you will build the various components for your app. Before you start building, you need to add Bootstrap and Font Awesome CDN links. You will use them both to style your app.
 
@@ -310,7 +310,7 @@ As mentioned earlier, this application is geared towards building a shopping car
 
 After setting up the app CSS style and adding images to your project, you will now proceed to build your components.
 
-### The Cart Component
+## The Cart Component
 
 Here, you will create the Cart component. This component will be responsible for displaying data in the cart state variable which you defined in the store. First, create a `components` folder in the `src` folder. Then create a new `Cart.js` file in the `src/components` directory and add the following snippet to it:
 
@@ -365,9 +365,9 @@ class Cart extends Component {
 export default observer(Cart);
 ```
 
-In this snippet, you coded the Cart component that will display items a user adds to the cart. For each item in the cart, you will display the image, name, description, price and quantity. These items can be increased, reduced or removed completely by calling certain actions defined in the store.
+In this snippet, you coded the Cart component that will display items a user adds to the cart. For each item in the cart, you will display the image, name, description, price, and quantity. These items can be increased, reduced, or removed entirely by calling certain actions defined in the store.
 
-### The Product Component
+## The Product Component
 
 Next up, you will build the Product component. The Product component will be responsible for displaying all the items available for the user to add to cart and purchase. Typically, this will be populated by your backend API. But for the sake of this tutorial, they have been hardcoded for you in the store.
 
@@ -435,7 +435,7 @@ class Product extends Component {
 export default observer(Product);
 ```
 
-Here, you have the Product component that displays all the products available in the store. The Product component is wrapped with a higher-order component(i.e observer) which automatically subscribes the component to an observable(in this case, `products`) so that this component only re-renders when there is a change in the `products` array.
+Here, you have the Product component that displays all the products available in the store. The Product component is wrapped with a higher-order component(i.e. observer) which automatically subscribes the component to an observable(in this case, `products`) so that this component only re-renders when there is a change in the `products` array.
 
 You also imported and rendered the Cart component defined above to give the user a visual representation of the items in the cart when the user adds or removes an item.
 
@@ -532,7 +532,7 @@ When your application has been created, you will see a page like this
 
 ![](https://paper-attachments.dropbox.com/s_85DAC1B5742DD922900BC6FF53C1A068559B9C70E254EA0F6B8E3A94E05AA9C8_1575990154267_Screenshot+2019-12-10+at+4.01.25+PM.png)
 
-Go to the **Settings** tab, scroll to the where you have Allowed Callback URLs and add this URL `http://localhost:3000/callback`.
+Go to the **Settings** tab, scroll to the where you have Allowed Callback URLs, add this URL `http://localhost:3000/callback` and click **Save Changes** at the bottom of the page.
 
 > Copy out your ClientID and Domain as you will need them soon.
 
@@ -671,9 +671,9 @@ Now, open your `src/App.js` file. First, add these to the import section:
 ```JavaScript
 // src/App.js
 
-import Login from "./components/Auth/Login"
+import Login from './components/Auth/Login';
 import Auth from './components/Auth/Auth';
-import Callback from "./callback/Callback"
+import Callback from './callback/Callback';
 ```
 
 Here, you imported the Login, Auth, and Callback components.
